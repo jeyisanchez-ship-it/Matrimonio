@@ -2386,18 +2386,17 @@ function buildDashboardHtml_(m, c) {
 }
 
 /**
- * 🔍 DIAGNÓSTICO: Muestra las líneas 625-640 del Index.html en GAS
- * Ejecutar desde el editor para ver qué versión del archivo está cargada.
+ * 🔍 DIAGNÓSTICO: Muestra las líneas 625-640 del Index.html en GAS sin evaluarlo
  */
 function diagnosticarIndexHtml() {
   try {
-    var template = HtmlService.createTemplateFromFile('Index');
-    var html = template.evaluate().getContent();
-    var lineas = html.split('\n');
+    // getResource() lee el archivo sin evaluar los scriptlets
+    var contenido = HtmlService.createHtmlOutputFromFile('Index').getContent();
+    var lineas = contenido.split('\n');
     Logger.log('📄 Index.html tiene ' + lineas.length + ' líneas en GAS');
     Logger.log('');
-    Logger.log('📍 Líneas 625-640:');
-    for (var i = 624; i < Math.min(640, lineas.length); i++) {
+    Logger.log('📍 Líneas 628-638:');
+    for (var i = 627; i < Math.min(638, lineas.length); i++) {
       Logger.log('L' + (i+1) + ': ' + lineas[i]);
     }
     Logger.log('');
@@ -2410,9 +2409,10 @@ function diagnosticarIndexHtml() {
       }
     }
     if (!encontrado) {
-      Logger.log('✅ No se encontró "metricas" en Index.html — archivo correcto');
+      Logger.log('✅ No se encontró "metricas" — archivo correcto');
     }
   } catch(e) {
     Logger.log('❌ Error: ' + e.toString());
+    Logger.log('👉 Abre Index.html en GAS y ve manualmente a la línea 633');
   }
 }
