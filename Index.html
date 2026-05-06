@@ -5,57 +5,53 @@
   <script>var templateData = <?!= templateData ?>;</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title><?= config.app_titulo || 'Boda Jennifer y Nicolás' ?> — Invitación</title>
-  
-  <!-- Favicon -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>💍</text></svg>">
-  <link rel="apple-touch-icon" href="<?= config.favicon_url || 'https://images.unsplash.com/photo-1519741497674-611481863552?w=180' ?>">
+  <title>Jennifer &amp; Nicolás — Boda 2026</title>
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec">
-  <meta property="og:title" content="<?= config.app_titulo || 'Boda Jennifer y Nicolás' ?>">
-  <meta property="og:description" content="¡Estás invitado a nuestra boda! 💍 <?= config.app_subtitulo || '15 de agosto de 2026' ?> · <?= config.venue_nombre || 'Hacienda Angelus Campestre' ?>, <?= config.venue_ciudad || 'Bogotá' ?>">
-  <meta property="og:image" content="<?= config.og_image_url || 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1200' ?>">
+  <meta property="og:title" content="Jennifer & Nicolás — Boda 2026">
+  <meta property="og:description" content="¡Estás invitado a nuestra boda! 💍 15 de agosto de 2026 · Hacienda Angelus Campestre, Bogotá">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1519741497674-611481863552?w=1200">
 
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">
   <meta property="twitter:url" content="https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec">
-  <meta property="twitter:title" content="<?= config.app_titulo || 'Boda Jennifer y Nicolás' ?>">
-  <meta property="twitter:description" content="¡Estás invitado a nuestra boda! 💍 <?= config.app_subtitulo || '15 de agosto de 2026' ?> · <?= config.venue_nombre || 'Hacienda Angelus Campestre' ?>, <?= config.venue_ciudad || 'Bogotá' ?>">
-  <meta property="twitter:image" content="<?= config.og_image_url || 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1200' ?>">
+  <meta property="twitter:title" content="Jennifer & Nicolás — Boda 2026">
+  <meta property="twitter:description" content="¡Estás invitado a nuestra boda! 💍 15 de agosto de 2026 · Hacienda Angelus Campestre, Bogotá">
+  <meta property="twitter:image" content="https://images.unsplash.com/photo-1519741497674-611481863552?w=1200">
 
   <!-- PWA -->
   <meta name="theme-color" content="#1a2e22">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="<?= config.app_titulo || 'Boda J&N' ?>">
-  <link rel="apple-touch-icon" href="<?= config.favicon_url || 'https://images.unsplash.com/photo-1519741497674-611481863552?w=180' ?>">
+  <meta name="apple-mobile-web-app-title" content="J&N Boda 2026">
+  <link rel="apple-touch-icon" href="https://images.unsplash.com/photo-1519741497674-611481863552?w=180">
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cormorant+Garamond:wght@300;400&family=Jost:wght@300;400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@200;300;400&display=swap" rel="stylesheet">
   <style>
     /* =============================================
        CSS CUSTOM PROPERTIES
     ============================================= */
     :root {
-      --forest:      <?= config.color_forest || '#1a2e22' ?>;
-      --forest-mid:  <?= config.color_forest_mid || '#243d2e' ?>;
-      --forest-lite: <?= config.color_forest_lite || '#2d5a3d' ?>;
-      --sage:        <?= config.color_sage || '#7a9e7e' ?>;
-      --sage-lite:   <?= config.color_sage_lite || '#a8c5ab' ?>;
-      --cream:       <?= config.color_cream || '#f7f0e6' ?>;
-      --cream-deep:  <?= config.color_cream_deep || '#ede3d5' ?>;
-      --off-white:   <?= config.color_off_white || '#faf6f0' ?>;
-      --gold:        <?= config.color_gold || '#c9a96e' ?>;
-      --gold-lite:   <?= config.color_gold_lite || '#e0c898' ?>;
-      --gold-dark:   <?= config.color_gold_dark || '#a07840' ?>;
-      --rose:        <?= config.color_rose || '#d4a5a5' ?>;
-      --rose-lite:   <?= config.color_rose_lite || '#e8c4c4' ?>;
-      --text-dark:   <?= config.color_text_dark || '#1a1a1a' ?>;
-      --text-mid:    <?= config.color_text_mid || '#4a4a4a' ?>;
-      --text-muted:  <?= config.color_text_muted || '#7a7a7a' ?>;
+      --forest:      #1a2e22;
+      --forest-mid:  #243d2e;
+      --forest-lite: #2d5a3d;
+      --sage:        #7a9e7e;
+      --sage-lite:   #a8c5ab;
+      --cream:       #f7f0e6;
+      --cream-deep:  #ede3d5;
+      --off-white:   #faf6f0;
+      --gold:        #c9a96e;
+      --gold-lite:   #e0c898;
+      --gold-dark:   #a07840;
+      --rose:        #d4a5a5;
+      --rose-lite:   #e8c4c4;
+      --text-dark:   #1a1a1a;
+      --text-mid:    #4a4a4a;
+      --text-muted:  #7a7a7a;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -648,89 +644,50 @@
       text-align: center;
       margin-bottom: 3rem;
     }
-    
-    /* Timeline horizontal en desktop, vertical en móvil */
     .timeline-list {
       list-style: none;
       position: relative;
-      padding: 0;
+      padding-left: 2.5rem;
+      max-width: 520px;
       margin: 0 auto;
-      max-width: 100%;
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      align-items: flex-start;
-      gap: 0;
-      overflow-x: visible;
-      padding-bottom: 1rem;
     }
-    
-    /* Línea horizontal conectora (desktop) */
     .timeline-list::before {
       content: '';
       position: absolute;
-      top: 60px;
-      left: 5%;
-      right: 5%;
-      height: 2px;
-      background: linear-gradient(to right, transparent, var(--gold) 10%, var(--gold) 90%, transparent);
-      z-index: 0;
+      left: 0.55rem; top: 0.5rem; bottom: 0.5rem;
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, var(--gold) 10%, var(--gold) 90%, transparent);
     }
-    
     .timeline-item {
       position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      min-width: 140px;
-      max-width: 160px;
-      padding: 0 0.5rem;
+      padding: 0.9rem 0 0.9rem 1.5rem;
       opacity: 0;
-      transform: translateY(20px);
+      transform: translateX(-20px);
       transition: opacity 0.6s ease, transform 0.6s ease;
-      z-index: 1;
     }
-    
-    .timeline-item.visible { 
-      opacity: 1; 
-      transform: translateY(0); 
-    }
-    
-    /* Círculo dorado con número */
+    .timeline-item.visible { opacity: 1; transform: translateX(0); }
+    /* Gold diamond bullet */
     .timeline-item::before {
-      content: '';
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: var(--gold);
-      border: 3px solid var(--off-white);
-      box-shadow: 0 0 0 2px var(--gold);
-      position: relative;
-      margin-bottom: 1rem;
-      z-index: 2;
+      content: '◆';
+      position: absolute;
+      left: -0.55rem;
+      top: 1rem;
+      font-size: 0.55rem;
+      color: var(--gold);
+      line-height: 1;
     }
-    
+    .timeline-icon { font-size: 1.1rem; margin-right: 0.5rem; }
     .timeline-time {
       font-family: 'Playfair Display', Georgia, serif;
       font-weight: 700;
       color: var(--gold-dark);
-      font-size: 0.95rem;
-      margin-bottom: 0.5rem;
-      white-space: nowrap;
+      font-size: 1rem;
     }
-    
     .timeline-desc {
       font-family: 'Jost', sans-serif;
       font-weight: 300;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       color: var(--text-mid);
-      line-height: 1.4;
-      min-height: 2.8rem;
-    }
-    
-    .timeline-icon { 
-      display: none; /* Ocultar emojis en el nuevo diseño */
     }
 
     /* =============================================
@@ -1336,7 +1293,6 @@
     @media (max-width: 767px) {
       body {
         font-size: 15px;
-        overflow-x: hidden;
       }
 
       .section-inner { 
@@ -1397,73 +1353,16 @@
         width: 160px;
         height: 160px;
       }
-      .historia-foto {
+      .historia-emojis {
         font-size: 2.8rem;
       }
 
-      /* Timeline - Vertical en móvil */
+      /* Timeline */
       .timeline-list {
-        flex-direction: column;
-        align-items: flex-start;
-        padding-left: 2.5rem;
-        max-width: 100%;
-        overflow-x: hidden;
+        padding-left: 2rem;
       }
-      
-      /* Línea vertical en móvil */
-      .timeline-list::before {
-        top: 0.5rem;
-        bottom: 0.5rem;
-        left: 0.55rem;
-        right: auto;
-        width: 2px;
-        height: auto;
-        background: linear-gradient(to bottom, transparent, var(--gold) 10%, var(--gold) 90%, transparent);
-      }
-      
       .timeline-item {
-        flex-direction: row;
-        align-items: flex-start;
-        text-align: left;
-        min-width: auto;
-        max-width: 100%;
-        padding: 0.9rem 0 0.9rem 1.5rem;
-        transform: translateX(-20px);
-      }
-      
-      .timeline-item.visible {
-        transform: translateX(0);
-      }
-      
-      /* Diamante dorado en móvil */
-      .timeline-item::before {
-        content: '◆';
-        width: auto;
-        height: auto;
-        border-radius: 0;
-        background: transparent;
-        border: none;
-        box-shadow: none;
-        position: absolute;
-        left: -0.55rem;
-        top: 1rem;
-        margin-bottom: 0;
-        font-size: 0.55rem;
-        color: var(--gold);
-        line-height: 1;
-      }
-      
-      .timeline-time {
-        font-size: 0.95rem;
-        margin-bottom: 0;
-        margin-right: 0.5rem;
-        white-space: normal;
-      }
-      
-      .timeline-desc {
-        font-size: 0.9rem;
-        min-height: auto;
-        text-align: left;
+        padding-left: 1.2rem;
       }
 
       /* Dresscode */
@@ -2200,43 +2099,6 @@
 <body>
 
   <!-- ============================================================
-       SVG DEFINITIONS — Reusable components
-  ============================================================ -->
-  <svg style="display:none;" aria-hidden="true">
-    <defs>
-      <symbol id="botanical-divider-symbol" viewBox="0 0 500 48">
-        <line x1="0" y1="24" x2="170" y2="24" stroke="rgba(201,169,110,0.3)" stroke-width="0.8"/>
-        <path d="M175 24 Q185 10 195 24 Q205 38 215 24" stroke="#7a9e7e" stroke-width="1.2" fill="none" stroke-linecap="round"/>
-        <ellipse cx="185" cy="16" rx="7" ry="4" fill="#4a7c59" transform="rotate(-30 185 16)" opacity="0.8"/>
-        <ellipse cx="205" cy="16" rx="7" ry="4" fill="#2d5a3d" transform="rotate(30 205 16)" opacity="0.8"/>
-        <g transform="translate(225,24)">
-          <circle cx="0" cy="-5" r="3" fill="#c9a96e" opacity="0.7"/>
-          <circle cx="4" cy="-1" r="3" fill="#c9a96e" opacity="0.7"/>
-          <circle cx="3" cy="4" r="3" fill="#c9a96e" opacity="0.7"/>
-          <circle cx="-3" cy="4" r="3" fill="#c9a96e" opacity="0.7"/>
-          <circle cx="-4" cy="-1" r="3" fill="#c9a96e" opacity="0.7"/>
-          <circle cx="0" cy="0" r="2.5" fill="#a07840" opacity="0.9"/>
-        </g>
-        <ellipse cx="240" cy="18" rx="6" ry="3.5" fill="#7a9e7e" transform="rotate(-20 240 18)" opacity="0.7"/>
-        <ellipse cx="250" cy="30" rx="6" ry="3.5" fill="#4a7c59" transform="rotate(20 250 30)" opacity="0.7"/>
-        <g transform="translate(260,24)">
-          <circle cx="0" cy="-5" r="3" fill="#d4a5a5" opacity="0.7"/>
-          <circle cx="4" cy="-1" r="3" fill="#d4a5a5" opacity="0.7"/>
-          <circle cx="3" cy="4" r="3" fill="#d4a5a5" opacity="0.7"/>
-          <circle cx="-3" cy="4" r="3" fill="#d4a5a5" opacity="0.7"/>
-          <circle cx="-4" cy="-1" r="3" fill="#d4a5a5" opacity="0.7"/>
-          <circle cx="0" cy="0" r="2.5" fill="#a07840" opacity="0.9"/>
-        </g>
-        <ellipse cx="275" cy="18" rx="6" ry="3.5" fill="#2d5a3d" transform="rotate(-20 275 18)" opacity="0.7"/>
-        <path d="M285 24 Q295 10 305 24 Q315 38 325 24" stroke="#7a9e7e" stroke-width="1.2" fill="none" stroke-linecap="round"/>
-        <ellipse cx="295" cy="16" rx="7" ry="4" fill="#4a7c59" transform="rotate(-30 295 16)" opacity="0.8"/>
-        <ellipse cx="315" cy="16" rx="7" ry="4" fill="#2d5a3d" transform="rotate(30 315 16)" opacity="0.8"/>
-        <line x1="330" y1="24" x2="500" y2="24" stroke="rgba(201,169,110,0.3)" stroke-width="0.8"/>
-      </symbol>
-    </defs>
-  </svg>
-
-  <!-- ============================================================
        SCROLL PROGRESS INDICATOR
   ============================================================ -->
   <div class="scroll-progress" aria-hidden="true">
@@ -2259,7 +2121,7 @@
     <span class="music-icon">🎵</span>
   </button>
   <audio id="background-music" loop>
-    <source src="<?= config.musica_fondo_url || 'https://drive.google.com/uc?export=download&id=1o5SUT5VOa_-6KuddhnfWwl_PW6DrUqI0' ?>" type="audio/mpeg">
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
   </audio>
 
   <!-- ============================================================
@@ -2463,10 +2325,10 @@
       <p class="hero-eyebrow">Con amor, los invitamos a celebrar</p>
       <div class="gold-rule" style="width:120px; margin: 0 auto 1.5rem;"></div>
       <h1 class="hero-names">
-        <?= config.nombre_novia || 'Jennifer' ?> <span class="ampersand">&amp;</span> <?= config.nombre_novio || 'Nicolás' ?>
+        Jennifer <span class="ampersand">&amp;</span> Nicolás
       </h1>
       <div class="gold-rule" style="width:120px; margin: 1.5rem auto 0;"></div>
-      <p class="hero-date"><?= config.hero_fecha_texto || 'Sábado · 15 de agosto de 2026' ?></p>
+      <p class="hero-date">Sábado · 15 de agosto de 2026</p>
     </div>
 
     <!-- COUNTDOWN -->
@@ -2500,7 +2362,35 @@
   </section>
   <!-- BOTANICAL DIVIDER SVG -->
   <div class="botanical-divider" aria-hidden="true">
-    <svg width="500" height="48"><use href="#botanical-divider-symbol"/></svg>
+    <svg width="500" height="48" viewBox="0 0 500 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="0" y1="24" x2="170" y2="24" stroke="rgba(201,169,110,0.3)" stroke-width="0.8"/>
+      <path d="M175 24 Q185 10 195 24 Q205 38 215 24" stroke="#7a9e7e" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <ellipse cx="185" cy="16" rx="7" ry="4" fill="#4a7c59" transform="rotate(-30 185 16)" opacity="0.8"/>
+      <ellipse cx="205" cy="16" rx="7" ry="4" fill="#2d5a3d" transform="rotate(30 205 16)" opacity="0.8"/>
+      <g transform="translate(225,24)">
+        <circle cx="0" cy="-5" r="3" fill="#c9a96e" opacity="0.7"/>
+        <circle cx="4" cy="-1" r="3" fill="#c9a96e" opacity="0.7"/>
+        <circle cx="3" cy="4" r="3" fill="#c9a96e" opacity="0.7"/>
+        <circle cx="-3" cy="4" r="3" fill="#c9a96e" opacity="0.7"/>
+        <circle cx="-4" cy="-1" r="3" fill="#c9a96e" opacity="0.7"/>
+        <circle cx="0" cy="0" r="2.5" fill="#a07840" opacity="0.9"/>
+      </g>
+      <ellipse cx="240" cy="18" rx="6" ry="3.5" fill="#7a9e7e" transform="rotate(-20 240 18)" opacity="0.7"/>
+      <ellipse cx="250" cy="30" rx="6" ry="3.5" fill="#4a7c59" transform="rotate(20 250 30)" opacity="0.7"/>
+      <g transform="translate(260,24)">
+        <circle cx="0" cy="-5" r="3" fill="#d4a5a5" opacity="0.7"/>
+        <circle cx="4" cy="-1" r="3" fill="#d4a5a5" opacity="0.7"/>
+        <circle cx="3" cy="4" r="3" fill="#d4a5a5" opacity="0.7"/>
+        <circle cx="-3" cy="4" r="3" fill="#d4a5a5" opacity="0.7"/>
+        <circle cx="-4" cy="-1" r="3" fill="#d4a5a5" opacity="0.7"/>
+        <circle cx="0" cy="0" r="2.5" fill="#a07840" opacity="0.9"/>
+      </g>
+      <ellipse cx="275" cy="18" rx="6" ry="3.5" fill="#2d5a3d" transform="rotate(-20 275 18)" opacity="0.7"/>
+      <path d="M285 24 Q295 10 305 24 Q315 38 325 24" stroke="#7a9e7e" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <ellipse cx="295" cy="16" rx="7" ry="4" fill="#4a7c59" transform="rotate(-30 295 16)" opacity="0.8"/>
+      <ellipse cx="315" cy="16" rx="7" ry="4" fill="#2d5a3d" transform="rotate(30 315 16)" opacity="0.8"/>
+      <line x1="330" y1="24" x2="500" y2="24" stroke="rgba(201,169,110,0.3)" stroke-width="0.8"/>
+    </svg>
   </div>
 
   <!-- ============================================================
@@ -2580,27 +2470,57 @@
         <ellipse cx="120" cy="90" rx="16" ry="28" fill="#3d5a45" transform="rotate(320 120 90)"/>
       </svg>
 
-      <h2><?= config.historia_titulo || 'Nuestra Historia' ?></h2>
+      <h2>Nuestra Historia</h2>
       <div class="gold-rule--short"></div>
       <p class="historia-texto">
-        <?= config.historia_texto || 'Jennifer y Nicolás se conocieron en una tarde de lluvia bogotana...' ?>
+        Jennifer y Nicolás se conocieron en una tarde de lluvia bogotana, cuando el destino los cruzó
+        en el mismo café. Entre conversaciones, risas y sueños compartidos, descubrieron que estaban
+        destinados a caminar juntos. Hoy, rodeados de su familia peluda —una Malamute y dos gatos negros—
+        están listos para dar el siguiente paso en su historia de amor y quieren celebrarlo con las
+        personas más importantes de sus vidas: ¡ustedes!
       </p>
 
       <div class="historia-frame">
         <div class="historia-frame-border"></div>
-        <img 
-          src="<?= config.historia_foto_url || 'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=400&h=400&fit=crop' ?>" 
-          alt="<?= config.historia_foto_alt || 'Jennifer y Nicolás' ?>"
-          class="historia-foto"
-          loading="lazy"
-        />
+        <img src="<?= config.historia_foto_url || 'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=400&h=400&fit=crop' ?>" 
+             alt="<?= config.historia_foto_alt || 'Jennifer y Nicolás' ?>" 
+             class="historia-foto"
+             loading="lazy">
       </div>
       <p class="historia-caption"><?= config.historia_familia || 'Jennifer, Nicolás, su Malamute y sus dos gatos negros 🖤' ?></p>
     </div>
   </section>
   <!-- BOTANICAL DIVIDER SVG -->
   <div class="botanical-divider" aria-hidden="true">
-    <svg width="500" height="48"><use href="#botanical-divider-symbol"/></svg>
+    <svg width="500" height="48" viewBox="0 0 500 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="0" y1="24" x2="170" y2="24" stroke="rgba(201,169,110,0.3)" stroke-width="0.8"/>
+      <path d="M175 24 Q185 10 195 24 Q205 38 215 24" stroke="#7a9e7e" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <ellipse cx="185" cy="16" rx="7" ry="4" fill="#4a7c59" transform="rotate(-30 185 16)" opacity="0.8"/>
+      <ellipse cx="205" cy="16" rx="7" ry="4" fill="#2d5a3d" transform="rotate(30 205 16)" opacity="0.8"/>
+      <g transform="translate(225,24)">
+        <circle cx="0" cy="-5" r="3" fill="#c9a96e" opacity="0.7"/>
+        <circle cx="4" cy="-1" r="3" fill="#c9a96e" opacity="0.7"/>
+        <circle cx="3" cy="4" r="3" fill="#c9a96e" opacity="0.7"/>
+        <circle cx="-3" cy="4" r="3" fill="#c9a96e" opacity="0.7"/>
+        <circle cx="-4" cy="-1" r="3" fill="#c9a96e" opacity="0.7"/>
+        <circle cx="0" cy="0" r="2.5" fill="#a07840" opacity="0.9"/>
+      </g>
+      <ellipse cx="240" cy="18" rx="6" ry="3.5" fill="#7a9e7e" transform="rotate(-20 240 18)" opacity="0.7"/>
+      <ellipse cx="250" cy="30" rx="6" ry="3.5" fill="#4a7c59" transform="rotate(20 250 30)" opacity="0.7"/>
+      <g transform="translate(260,24)">
+        <circle cx="0" cy="-5" r="3" fill="#d4a5a5" opacity="0.7"/>
+        <circle cx="4" cy="-1" r="3" fill="#d4a5a5" opacity="0.7"/>
+        <circle cx="3" cy="4" r="3" fill="#d4a5a5" opacity="0.7"/>
+        <circle cx="-3" cy="4" r="3" fill="#d4a5a5" opacity="0.7"/>
+        <circle cx="-4" cy="-1" r="3" fill="#d4a5a5" opacity="0.7"/>
+        <circle cx="0" cy="0" r="2.5" fill="#a07840" opacity="0.9"/>
+      </g>
+      <ellipse cx="275" cy="18" rx="6" ry="3.5" fill="#2d5a3d" transform="rotate(-20 275 18)" opacity="0.7"/>
+      <path d="M285 24 Q295 10 305 24 Q315 38 325 24" stroke="#7a9e7e" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <ellipse cx="295" cy="16" rx="7" ry="4" fill="#4a7c59" transform="rotate(-30 295 16)" opacity="0.8"/>
+      <ellipse cx="315" cy="16" rx="7" ry="4" fill="#2d5a3d" transform="rotate(30 315 16)" opacity="0.8"/>
+      <line x1="330" y1="24" x2="500" y2="24" stroke="rgba(201,169,110,0.3)" stroke-width="0.8"/>
+    </svg>
   </div>
 
   <!-- ============================================================
@@ -2649,11 +2569,11 @@
       </svg>
     </div>
     <div class="section-inner">
-      <h2><?= config.ubicacion_titulo || '¿Dónde nos encontramos?' ?></h2>
+      <h2>¿Dónde nos encontramos?</h2>
       <div class="gold-rule--short"></div>
-      <p class="ubicacion-nombre"><?= config.venue_nombre || 'Hacienda Angelus Campestre' ?></p>
-      <p class="ubicacion-direccion"><?= config.venue_direccion || 'Vía Guaymaral, Cl. 235 #Km 5' ?>, <?= config.venue_ciudad || 'Bogotá' ?></p>
-      <a href="<?= config.venue_maps_url || 'https://maps.google.com/?q=Hacienda+Angelus+Campestre+Bogota' ?>"
+      <p class="ubicacion-nombre">Hacienda Angelus Campestre</p>
+      <p class="ubicacion-direccion">Vía Guaymaral, Cl. 235 #Km 5, Bogotá</p>
+      <a href="https://maps.google.com/?q=Hacienda+Angelus+Campestre+Bogota"
          target="_blank" rel="noopener noreferrer"
          class="btn btn-maps"
          aria-label="Abrir ubicación en Google Maps">
@@ -2663,7 +2583,35 @@
   </section>
   <!-- BOTANICAL DIVIDER SVG -->
   <div class="botanical-divider" aria-hidden="true">
-    <svg width="500" height="48"><use href="#botanical-divider-symbol"/></svg>
+    <svg width="500" height="48" viewBox="0 0 500 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="0" y1="24" x2="170" y2="24" stroke="rgba(201,169,110,0.3)" stroke-width="0.8"/>
+      <path d="M175 24 Q185 10 195 24 Q205 38 215 24" stroke="#7a9e7e" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <ellipse cx="185" cy="16" rx="7" ry="4" fill="#4a7c59" transform="rotate(-30 185 16)" opacity="0.8"/>
+      <ellipse cx="205" cy="16" rx="7" ry="4" fill="#2d5a3d" transform="rotate(30 205 16)" opacity="0.8"/>
+      <g transform="translate(225,24)">
+        <circle cx="0" cy="-5" r="3" fill="#c9a96e" opacity="0.7"/>
+        <circle cx="4" cy="-1" r="3" fill="#c9a96e" opacity="0.7"/>
+        <circle cx="3" cy="4" r="3" fill="#c9a96e" opacity="0.7"/>
+        <circle cx="-3" cy="4" r="3" fill="#c9a96e" opacity="0.7"/>
+        <circle cx="-4" cy="-1" r="3" fill="#c9a96e" opacity="0.7"/>
+        <circle cx="0" cy="0" r="2.5" fill="#a07840" opacity="0.9"/>
+      </g>
+      <ellipse cx="240" cy="18" rx="6" ry="3.5" fill="#7a9e7e" transform="rotate(-20 240 18)" opacity="0.7"/>
+      <ellipse cx="250" cy="30" rx="6" ry="3.5" fill="#4a7c59" transform="rotate(20 250 30)" opacity="0.7"/>
+      <g transform="translate(260,24)">
+        <circle cx="0" cy="-5" r="3" fill="#d4a5a5" opacity="0.7"/>
+        <circle cx="4" cy="-1" r="3" fill="#d4a5a5" opacity="0.7"/>
+        <circle cx="3" cy="4" r="3" fill="#d4a5a5" opacity="0.7"/>
+        <circle cx="-3" cy="4" r="3" fill="#d4a5a5" opacity="0.7"/>
+        <circle cx="-4" cy="-1" r="3" fill="#d4a5a5" opacity="0.7"/>
+        <circle cx="0" cy="0" r="2.5" fill="#a07840" opacity="0.9"/>
+      </g>
+      <ellipse cx="275" cy="18" rx="6" ry="3.5" fill="#2d5a3d" transform="rotate(-20 275 18)" opacity="0.7"/>
+      <path d="M285 24 Q295 10 305 24 Q315 38 325 24" stroke="#7a9e7e" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <ellipse cx="295" cy="16" rx="7" ry="4" fill="#4a7c59" transform="rotate(-30 295 16)" opacity="0.8"/>
+      <ellipse cx="315" cy="16" rx="7" ry="4" fill="#2d5a3d" transform="rotate(30 315 16)" opacity="0.8"/>
+      <line x1="330" y1="24" x2="500" y2="24" stroke="rgba(201,169,110,0.3)" stroke-width="0.8"/>
+    </svg>
   </div>
 
   <!-- ============================================================
@@ -2719,57 +2667,68 @@
       </svg>
     </div>
     <div class="section-inner">
-      <h2><?= config.timeline_titulo || 'Programa del Día' ?></h2>
+      <h2>Programa del Día</h2>
       <div class="gold-rule--short"></div>
       <ol class="timeline-list" aria-label="Programa del evento">
-        <? if (config.timeline_1_hora) { ?>
         <li class="timeline-item fade-section">
-          <span class="timeline-time"><?= config.timeline_1_hora ?></span>
-          <span class="timeline-desc"><?= config.timeline_1_desc ?></span>
+          <span class="timeline-icon" aria-hidden="true">🎉</span>
+          <span class="timeline-time">12:30 PM</span>
+          <span class="timeline-desc"> — Bienvenida</span>
         </li>
-        <? } ?>
-        <? if (config.timeline_2_hora) { ?>
         <li class="timeline-item fade-section">
-          <span class="timeline-time"><?= config.timeline_2_hora ?></span>
-          <span class="timeline-desc"><?= config.timeline_2_desc ?></span>
+          <span class="timeline-icon" aria-hidden="true">💍</span>
+          <span class="timeline-time">1:00 PM</span>
+          <span class="timeline-desc"> — Ceremonia</span>
         </li>
-        <? } ?>
-        <? if (config.timeline_3_hora) { ?>
         <li class="timeline-item fade-section">
-          <span class="timeline-time"><?= config.timeline_3_hora ?></span>
-          <span class="timeline-desc"><?= config.timeline_3_desc ?></span>
+          <span class="timeline-icon" aria-hidden="true">📸</span>
+          <span class="timeline-time">2:00 PM</span>
+          <span class="timeline-desc"> — Fotos y Cóctel</span>
         </li>
-        <? } ?>
-        <? if (config.timeline_4_hora) { ?>
         <li class="timeline-item fade-section">
-          <span class="timeline-time"><?= config.timeline_4_hora ?></span>
-          <span class="timeline-desc"><?= config.timeline_4_desc ?></span>
+          <span class="timeline-icon" aria-hidden="true">🍽️</span>
+          <span class="timeline-time">4:00 PM</span>
+          <span class="timeline-desc"> — Almuerzo</span>
         </li>
-        <? } ?>
-        <? if (config.timeline_5_hora) { ?>
         <li class="timeline-item fade-section">
-          <span class="timeline-time"><?= config.timeline_5_hora ?></span>
-          <span class="timeline-desc"><?= config.timeline_5_desc ?></span>
+          <span class="timeline-icon" aria-hidden="true">🌙</span>
+          <span class="timeline-time">7:00 PM</span>
+          <span class="timeline-desc"> — Fin</span>
         </li>
-        <? } ?>
-        <? if (config.timeline_6_hora) { ?>
-        <li class="timeline-item fade-section">
-          <span class="timeline-time"><?= config.timeline_6_hora ?></span>
-          <span class="timeline-desc"><?= config.timeline_6_desc ?></span>
-        </li>
-        <? } ?>
-        <? if (config.timeline_7_hora) { ?>
-        <li class="timeline-item fade-section">
-          <span class="timeline-time"><?= config.timeline_7_hora ?></span>
-          <span class="timeline-desc"><?= config.timeline_7_desc ?></span>
-        </li>
-        <? } ?>
       </ol>
     </div>
   </section>
   <!-- BOTANICAL DIVIDER SVG -->
   <div class="botanical-divider" aria-hidden="true">
-    <svg width="500" height="48"><use href="#botanical-divider-symbol"/></svg>
+    <svg width="500" height="48" viewBox="0 0 500 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="0" y1="24" x2="170" y2="24" stroke="rgba(201,169,110,0.3)" stroke-width="0.8"/>
+      <path d="M175 24 Q185 10 195 24 Q205 38 215 24" stroke="#7a9e7e" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <ellipse cx="185" cy="16" rx="7" ry="4" fill="#4a7c59" transform="rotate(-30 185 16)" opacity="0.8"/>
+      <ellipse cx="205" cy="16" rx="7" ry="4" fill="#2d5a3d" transform="rotate(30 205 16)" opacity="0.8"/>
+      <g transform="translate(225,24)">
+        <circle cx="0" cy="-5" r="3" fill="#c9a96e" opacity="0.7"/>
+        <circle cx="4" cy="-1" r="3" fill="#c9a96e" opacity="0.7"/>
+        <circle cx="3" cy="4" r="3" fill="#c9a96e" opacity="0.7"/>
+        <circle cx="-3" cy="4" r="3" fill="#c9a96e" opacity="0.7"/>
+        <circle cx="-4" cy="-1" r="3" fill="#c9a96e" opacity="0.7"/>
+        <circle cx="0" cy="0" r="2.5" fill="#a07840" opacity="0.9"/>
+      </g>
+      <ellipse cx="240" cy="18" rx="6" ry="3.5" fill="#7a9e7e" transform="rotate(-20 240 18)" opacity="0.7"/>
+      <ellipse cx="250" cy="30" rx="6" ry="3.5" fill="#4a7c59" transform="rotate(20 250 30)" opacity="0.7"/>
+      <g transform="translate(260,24)">
+        <circle cx="0" cy="-5" r="3" fill="#d4a5a5" opacity="0.7"/>
+        <circle cx="4" cy="-1" r="3" fill="#d4a5a5" opacity="0.7"/>
+        <circle cx="3" cy="4" r="3" fill="#d4a5a5" opacity="0.7"/>
+        <circle cx="-3" cy="4" r="3" fill="#d4a5a5" opacity="0.7"/>
+        <circle cx="-4" cy="-1" r="3" fill="#d4a5a5" opacity="0.7"/>
+        <circle cx="0" cy="0" r="2.5" fill="#a07840" opacity="0.9"/>
+      </g>
+      <ellipse cx="275" cy="18" rx="6" ry="3.5" fill="#2d5a3d" transform="rotate(-20 275 18)" opacity="0.7"/>
+      <path d="M285 24 Q295 10 305 24 Q315 38 325 24" stroke="#7a9e7e" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <ellipse cx="295" cy="16" rx="7" ry="4" fill="#4a7c59" transform="rotate(-30 295 16)" opacity="0.8"/>
+      <ellipse cx="315" cy="16" rx="7" ry="4" fill="#2d5a3d" transform="rotate(30 315 16)" opacity="0.8"/>
+      <line x1="330" y1="24" x2="500" y2="24" stroke="rgba(201,169,110,0.3)" stroke-width="0.8"/>
+    </svg>
   </div>
 
   <!-- ============================================================
@@ -2864,42 +2823,32 @@
       </svg>
     </div>
     <div class="section-inner">
-      <h2><?= config.dresscode_titulo || 'Dress Code' ?></h2>
-      <p class="dresscode-subtitulo"><?= config.dresscode_subtitulo || 'Traje formal · Vestido largo' ?></p>
+      <h2>Dress Code</h2>
+      <p class="dresscode-subtitulo">Traje formal · Vestido largo</p>
       <div class="color-palette" role="list" aria-label="Colores reservados para los novios">
-        <? if (config.dresscode_color_1) { ?>
         <div class="color-circle-wrapper" role="listitem">
-          <div class="color-circle" style="background:<?= config.dresscode_color_1 ?>;" aria-label="<?= config.dresscode_color_1_nombre || 'Color 1' ?> — reservado para los novios"></div>
-          <span class="color-circle-label"><?= config.dresscode_color_1_nombre || 'Color 1' ?></span>
+          <div class="color-circle" style="background:#ffffff;" aria-label="Blanco — reservado para los novios"></div>
+          <span class="color-circle-label">Blanco</span>
         </div>
-        <? } ?>
-        <? if (config.dresscode_color_2) { ?>
         <div class="color-circle-wrapper" role="listitem">
-          <div class="color-circle" style="background:<?= config.dresscode_color_2 ?>;" aria-label="<?= config.dresscode_color_2_nombre || 'Color 2' ?> — reservado para los novios"></div>
-          <span class="color-circle-label"><?= config.dresscode_color_2_nombre || 'Color 2' ?></span>
+          <div class="color-circle" style="background:#f7f0e6;" aria-label="Crema — reservado para los novios"></div>
+          <span class="color-circle-label">Crema</span>
         </div>
-        <? } ?>
-        <? if (config.dresscode_color_3) { ?>
         <div class="color-circle-wrapper" role="listitem">
-          <div class="color-circle" style="background:<?= config.dresscode_color_3 ?>;" aria-label="<?= config.dresscode_color_3_nombre || 'Color 3' ?> — reservado para los novios"></div>
-          <span class="color-circle-label"><?= config.dresscode_color_3_nombre || 'Color 3' ?></span>
+          <div class="color-circle" style="background:#7a9e7e;" aria-label="Verde — reservado para los novios"></div>
+          <span class="color-circle-label">Verde</span>
         </div>
-        <? } ?>
       </div>
-      <p class="color-palette-note"><?= config.dresscode_nota || 'Reservado para los novios' ?></p>
+      <p class="color-palette-note">Reservado para los novios</p>
       <div class="dresscode-cards">
-        <? if (config.dresscode_card_1_texto) { ?>
         <div class="dresscode-card">
-          <span class="dresscode-card-icon" aria-hidden="true"><?= config.dresscode_card_1_icono || '🔞' ?></span>
-          <span class="dresscode-card-text"><?= config.dresscode_card_1_texto ?></span>
+          <span class="dresscode-card-icon" aria-hidden="true">🔞</span>
+          <span class="dresscode-card-text">Solo adultos</span>
         </div>
-        <? } ?>
-        <? if (config.dresscode_card_2_texto) { ?>
         <div class="dresscode-card">
-          <span class="dresscode-card-icon" aria-hidden="true"><?= config.dresscode_card_2_icono || '💌' ?></span>
-          <span class="dresscode-card-text"><?= config.dresscode_card_2_texto ?></span>
+          <span class="dresscode-card-icon" aria-hidden="true">💌</span>
+          <span class="dresscode-card-text">Lluvia de sobres</span>
         </div>
-        <? } ?>
       </div>
     </div>
   </section>
@@ -2909,8 +2858,8 @@
   ============================================================ -->
   <section id="galeria" class="fade-section">
     <div class="section-inner">
-      <h2><?= config.galeria_titulo || 'Nuestros Momentos' ?></h2>
-      <p class="galeria-subtitulo"><?= config.galeria_subtitulo || 'Algunos recuerdos que queremos compartir con ustedes' ?></p>
+      <h2>Nuestros Momentos</h2>
+      <p class="galeria-subtitulo">Algunos recuerdos que queremos compartir con ustedes</p>
       <div class="gold-rule--short"></div>
       
       <div class="galeria-grid" id="galeria-grid">
@@ -2931,7 +2880,35 @@
 
   <!-- BOTANICAL DIVIDER SVG -->
   <div class="botanical-divider" aria-hidden="true">
-    <svg width="500" height="48"><use href="#botanical-divider-symbol"/></svg>
+    <svg width="500" height="48" viewBox="0 0 500 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="0" y1="24" x2="170" y2="24" stroke="rgba(201,169,110,0.3)" stroke-width="0.8"/>
+      <path d="M175 24 Q185 10 195 24 Q205 38 215 24" stroke="#7a9e7e" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <ellipse cx="185" cy="16" rx="7" ry="4" fill="#4a7c59" transform="rotate(-30 185 16)" opacity="0.8"/>
+      <ellipse cx="205" cy="16" rx="7" ry="4" fill="#2d5a3d" transform="rotate(30 205 16)" opacity="0.8"/>
+      <g transform="translate(225,24)">
+        <circle cx="0" cy="-5" r="3" fill="#c9a96e" opacity="0.7"/>
+        <circle cx="4" cy="-1" r="3" fill="#c9a96e" opacity="0.7"/>
+        <circle cx="3" cy="4" r="3" fill="#c9a96e" opacity="0.7"/>
+        <circle cx="-3" cy="4" r="3" fill="#c9a96e" opacity="0.7"/>
+        <circle cx="-4" cy="-1" r="3" fill="#c9a96e" opacity="0.7"/>
+        <circle cx="0" cy="0" r="2.5" fill="#a07840" opacity="0.9"/>
+      </g>
+      <ellipse cx="240" cy="18" rx="6" ry="3.5" fill="#7a9e7e" transform="rotate(-20 240 18)" opacity="0.7"/>
+      <ellipse cx="250" cy="30" rx="6" ry="3.5" fill="#4a7c59" transform="rotate(20 250 30)" opacity="0.7"/>
+      <g transform="translate(260,24)">
+        <circle cx="0" cy="-5" r="3" fill="#d4a5a5" opacity="0.7"/>
+        <circle cx="4" cy="-1" r="3" fill="#d4a5a5" opacity="0.7"/>
+        <circle cx="3" cy="4" r="3" fill="#d4a5a5" opacity="0.7"/>
+        <circle cx="-3" cy="4" r="3" fill="#d4a5a5" opacity="0.7"/>
+        <circle cx="-4" cy="-1" r="3" fill="#d4a5a5" opacity="0.7"/>
+        <circle cx="0" cy="0" r="2.5" fill="#a07840" opacity="0.9"/>
+      </g>
+      <ellipse cx="275" cy="18" rx="6" ry="3.5" fill="#2d5a3d" transform="rotate(-20 275 18)" opacity="0.7"/>
+      <path d="M285 24 Q295 10 305 24 Q315 38 325 24" stroke="#7a9e7e" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <ellipse cx="295" cy="16" rx="7" ry="4" fill="#4a7c59" transform="rotate(-30 295 16)" opacity="0.8"/>
+      <ellipse cx="315" cy="16" rx="7" ry="4" fill="#2d5a3d" transform="rotate(30 315 16)" opacity="0.8"/>
+      <line x1="330" y1="24" x2="500" y2="24" stroke="rgba(201,169,110,0.3)" stroke-width="0.8"/>
+    </svg>
   </div>
 
   <!-- ============================================================
@@ -3079,8 +3056,8 @@
 
       <!-- Personalised greeting -->
       <div class="rsvp-saludo">
-        <h2><?= config.rsvp_pregunta || '¿Nos acompañas,' ?><br><span id="rsvp-nombre" class="rsvp-nombre-span"></span>?</h2>
-        <p class="rsvp-subtitulo"><?= config.rsvp_subtitulo || 'Tu presencia es el mejor regalo que nos puedes dar.' ?></p>
+        <h2>¿Nos acompañas,<br><span id="rsvp-nombre" class="rsvp-nombre-span"></span>?</h2>
+        <p class="rsvp-subtitulo">Tu presencia es el mejor regalo que nos puedes dar.</p>
       </div>
 
       <input type="hidden" id="rsvp-id">
@@ -3308,7 +3285,7 @@
     </svg>
 
     <div class="section-inner">
-      <h2><?= config.subir_fotos_titulo || 'Comparte tus Fotos' ?></h2>
+      <h2>Comparte tus Fotos</h2>
       <div class="gold-rule--short"></div>
       <p class="subir-fotos-desc">
         Después de la boda, nos encantaría que compartas tus fotos y videos del gran día.<br>
@@ -3323,12 +3300,13 @@
           <strong>Disponible después del 15 de agosto de 2026</strong>
         </p>
         
-        <!-- Link a carpeta de Google Drive parametrizado -->
-        <a href="https://drive.google.com/drive/folders/<?= config.drive_folder_id || 'FOLDER_ID' ?>?usp=sharing" 
+        <!-- Enlace dinámico a carpeta de Google Drive -->
+        <a href="<?= config.drive_folder_id ? (config.drive_base_url || 'https://drive.google.com/drive/folders/') + config.drive_folder_id + '?usp=sharing' : '#' ?>" 
            target="_blank" 
            rel="noopener noreferrer" 
            class="subir-fotos-link"
-           id="link-subir-fotos">
+           id="link-subir-fotos"
+           style="<?= !config.drive_folder_id ? 'display:none;' : '' ?>">
           📤 Subir Fotos
         </a>
 
@@ -3368,8 +3346,8 @@
         </svg>
       </div>
 
-      <p class="footer-names"><?= config.nombre_novia || 'Jennifer' ?> <span class="ampersand">&amp;</span> <?= config.nombre_novio || 'Nicolás' ?></p>
-      <p class="footer-date"><?= config.hero_fecha_texto || '15 · 08 · 2026' ?></p>
+      <p class="footer-names">Jennifer <span class="ampersand">&amp;</span> Nicolás</p>
+      <p class="footer-date">15 · 08 · 2026</p>
       <div class="gold-rule" style="width:80px; margin: 0 auto 1.5rem;"></div>
 
       <!-- Compartir en redes -->
@@ -3396,7 +3374,7 @@
       </div>
 
       <p style="margin-top:2rem;">¿Necesitas ayuda? Contáctanos por WhatsApp</p>
-      <a href="https://wa.me/<?= config.whatsapp_numero || '573213837837' ?>?text=<?= encodeURIComponent(config.whatsapp_mensaje_default || 'Hola, tengo problemas para confirmar mi asistencia a la boda') %>"
+      <a href="https://wa.me/573213837837?text=Hola,%20tengo%20problemas%20para%20confirmar%20mi%20asistencia%20a%20la%20boda"
          target="_blank" rel="noopener noreferrer"
          class="btn"
          aria-label="Contactar soporte por WhatsApp"
@@ -3472,23 +3450,14 @@
     /* ============================================================
        HERO CAROUSEL
     ============================================================ */
-    // Hero photos desde parámetros
+    // CONFIGURACIÓN: Agrega aquí las URLs de fotos para el hero
     var HERO_PHOTOS = [
-      '<?= config.hero_foto_1 || "https://images.unsplash.com/photo-1519741497674-611481863552?w=1920&q=80" ?>',
-      '<?= config.hero_foto_2 || "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=1920&q=80" ?>',
-      '<?= config.hero_foto_3 || "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=1920&q=80" ?>',
-      '<?= config.hero_foto_4 || "https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=1920&q=80" ?>',
-      '<?= config.hero_foto_5 || "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=1920&q=80" ?>'
-    ].filter(function(url) { return url && url.trim() !== ''; });
-
-    // Preload primera imagen hero para mejor rendimiento
-    if (HERO_PHOTOS.length > 0) {
-      var preloadLink = document.createElement('link');
-      preloadLink.rel = 'preload';
-      preloadLink.as = 'image';
-      preloadLink.href = HERO_PHOTOS[0];
-      document.head.appendChild(preloadLink);
-    }
+      'https://images.unsplash.com/photo-1519741497674-611481863552?w=1920&q=80',
+      'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=1920&q=80',
+      'https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=1920&q=80',
+      'https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=1920&q=80',
+      'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=1920&q=80'
+    ];
 
     var currentHeroSlide = 0;
 
@@ -3504,7 +3473,7 @@
         
         var img = document.createElement('img');
         img.src = url;
-        img.alt = '<?= config.nombre_novia || 'Jennifer' ?> y <?= config.nombre_novio || 'Nicolás' ?>';
+        img.alt = 'Foto de Jennifer y Nicolás';
         img.loading = index === 0 ? 'eager' : 'lazy';
         
         slide.appendChild(img);
@@ -3526,15 +3495,15 @@
     /* ============================================================
        GALERÍA DE FOTOS
     ============================================================ */
-    // CONFIGURACIÓN: Fotos desde parámetros
+    // CONFIGURACIÓN: Agrega aquí las URLs de tus fotos
     var GALLERY_PHOTOS = [
-      '<?= config.galeria_foto_1 || "" ?>',
-      '<?= config.galeria_foto_2 || "" ?>',
-      '<?= config.galeria_foto_3 || "" ?>',
-      '<?= config.galeria_foto_4 || "" ?>',
-      '<?= config.galeria_foto_5 || "" ?>',
-      '<?= config.galeria_foto_6 || "" ?>'
-    ].filter(function(url) { return url && url.trim() !== ''; });
+      'https://images.unsplash.com/photo-1519741497674-611481863552?w=800',
+      'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800',
+      'https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800',
+      'https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=800',
+      'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=800',
+      'https://images.unsplash.com/photo-1529636798458-92182e662485?w=800'
+    ];
 
     var currentLightboxIndex = 0;
 
@@ -3549,7 +3518,7 @@
         
         var img = document.createElement('img');
         img.src = url;
-        img.alt = 'Foto ' + (index + 1) + ' de <?= config.nombre_novia || 'Jennifer' ?> y <?= config.nombre_novio || 'Nicolás' ?>';
+        img.alt = 'Foto ' + (index + 1) + ' de Jennifer y Nicolás';
         img.loading = 'lazy';
         
         item.appendChild(img);
@@ -3655,7 +3624,7 @@
     ============================================================ */
     function initSocialShare() {
       var currentUrl = window.location.href;
-      var shareText = '<?= config.share_text || '¡Estás invitado a nuestra boda!' ?>';
+      var shareText = '¡Estás invitado a la boda de Jennifer & Nicolás! 💍 15 de agosto de 2026';
       
       // WhatsApp
       var whatsappBtn = document.getElementById('share-whatsapp');
@@ -4037,44 +4006,29 @@
     }
 
     function buscarCanciones(term) {
-      // Usar JSONP para evitar problemas de CORS en iPhone
-      var callbackName = 'itunesCallback_' + Date.now();
-      var url = 'https://itunes.apple.com/search?term=' + encodeURIComponent(term) + '&entity=song&limit=8&media=music&callback=' + callbackName;
+      var url = 'https://itunes.apple.com/search?term=' + encodeURIComponent(term) + '&entity=song&limit=8&media=music';
       
       // Timeout de 5 segundos
       var timeoutId = setTimeout(function() {
-        cleanup();
-        renderizarResultados([], 'La búsqueda está tardando mucho. Puedes escribir la canción manualmente.');
+        renderizarResultados([], 'La búsqueda está tardando mucho. Intenta de nuevo o escribe la canción manualmente.');
       }, 5000);
       
-      // Crear callback global
-      window[callbackName] = function(data) {
-        clearTimeout(timeoutId);
-        cleanup();
-        renderizarResultados(data.results && data.results.length ? data.results : [], 
-          data.results && data.results.length === 0 ? 'No se encontraron resultados. Intenta con otro término o escríbelo manualmente.' : null
-        );
-      };
-      
-      // Crear script tag para JSONP
-      var script = document.createElement('script');
-      script.src = url;
-      script.id = callbackName;
-      
-      script.onerror = function() {
-        clearTimeout(timeoutId);
-        cleanup();
-        console.error('Error en búsqueda iTunes (JSONP)');
-        renderizarResultados([], 'Error al buscar canciones. Puedes escribir el nombre manualmente en el campo de texto.');
-      };
-      
-      document.head.appendChild(script);
-      
-      function cleanup() {
-        var scriptEl = document.getElementById(callbackName);
-        if (scriptEl) scriptEl.parentNode.removeChild(scriptEl);
-        delete window[callbackName];
-      }
+      fetch(url)
+        .then(function(r) { 
+          clearTimeout(timeoutId);
+          if (!r.ok) throw new Error('Error de red'); 
+          return r.json(); 
+        })
+        .then(function(d) { 
+          renderizarResultados(d.results && d.results.length ? d.results : [], 
+            d.results && d.results.length === 0 ? 'No se encontraron resultados. Intenta con otro término.' : null
+          ); 
+        })
+        .catch(function(err) { 
+          clearTimeout(timeoutId);
+          console.error('Error en búsqueda iTunes:', err);
+          renderizarResultados([], 'Error al buscar canciones. Puedes escribir el nombre manualmente en el campo de texto.');
+        });
     }
 
     function initItunesSearch() {
@@ -4115,13 +4069,12 @@
     }
 
     /* ============================================================
-       submitRsvp - Con manejo de errores
+       submitRsvp
     ============================================================ */
     function submitRsvp() {
-      try {
-        var errorCheckbox = document.getElementById('error-checkbox');
-        var errorCorreo   = document.getElementById('error-correo');
-        if (errorCheckbox) { errorCheckbox.style.display = 'none'; errorCheckbox.textContent = ''; }
+      var errorCheckbox = document.getElementById('error-checkbox');
+      var errorCorreo   = document.getElementById('error-correo');
+      if (errorCheckbox) { errorCheckbox.style.display = 'none'; errorCheckbox.textContent = ''; }
       if (errorCorreo)   { errorCorreo.style.display = 'none';   errorCorreo.textContent = ''; }
 
       var checkPrincipal = document.getElementById('check-principal');
@@ -4143,14 +4096,13 @@
           shakeElement(document.getElementById('input-correo'));
           return;
         }
-        // Validación mejorada de email
+        // Validación mejorada: debe tener @ y un dominio válido (.com, .co, .net, etc.)
         if (!correoVal.includes('@')) {
           if (errorCorreo) { errorCorreo.textContent = 'El correo debe contener @'; errorCorreo.style.display = 'block'; }
           shakeElement(document.getElementById('input-correo'));
           return;
         }
-        // Regex mejorado: valida formato estándar de email
-        if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(correoVal)) {
+        if (!/^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/.test(correoVal)) {
           if (errorCorreo) { errorCorreo.textContent = 'Por favor ingresa un correo válido (ej: nombre@dominio.com)'; errorCorreo.style.display = 'block'; }
           shakeElement(document.getElementById('input-correo'));
           return;
@@ -4208,16 +4160,6 @@
           .guardarConfirmacion(datos);
       } else {
         console.log('google.script.run no disponible. Datos:', datos);
-        if (btnEnviar) { btnEnviar.disabled = false; btnEnviar.textContent = 'Será un honor acompañarlos'; }
-      }
-      } catch (error) {
-        console.error('Error en submitRsvp:', error);
-        var mensajeError = document.getElementById('mensaje-error');
-        if (mensajeError) {
-          mensajeError.textContent = 'Ocurrió un error inesperado. Por favor intenta nuevamente.';
-          mensajeError.style.display = 'block';
-        }
-        var btnEnviar = document.getElementById('btn-enviar');
         if (btnEnviar) { btnEnviar.disabled = false; btnEnviar.textContent = 'Será un honor acompañarlos'; }
       }
     }
@@ -4311,41 +4253,26 @@
     }
 
     function searchItunesExtra(query) {
-      // Usar JSONP para evitar problemas de CORS en iPhone
-      var callbackName = 'itunesCallbackExtra_' + Date.now();
-      var url = 'https://itunes.apple.com/search?term=' + encodeURIComponent(query) + '&media=music&entity=song&limit=8&callback=' + callbackName;
+      var url = 'https://itunes.apple.com/search?term=' + encodeURIComponent(query) + '&media=music&entity=song&limit=8';
       
       var timeoutId = setTimeout(function() {
-        cleanup();
-        displaySongResultsExtra([], 'La búsqueda está tardando mucho. Puedes escribir la canción manualmente.');
+        displaySongResultsExtra([], 'La búsqueda está tardando mucho. Intenta de nuevo.');
       }, 5000);
       
-      // Crear callback global
-      window[callbackName] = function(data) {
-        clearTimeout(timeoutId);
-        cleanup();
-        displaySongResultsExtra(data.results || []);
-      };
-      
-      // Crear script tag para JSONP
-      var script = document.createElement('script');
-      script.src = url;
-      script.id = callbackName;
-      
-      script.onerror = function() {
-        clearTimeout(timeoutId);
-        cleanup();
-        console.error('Error buscando canciones (JSONP)');
-        displaySongResultsExtra([], 'Error al buscar. Puedes escribir el nombre manualmente.');
-      };
-      
-      document.head.appendChild(script);
-      
-      function cleanup() {
-        var scriptEl = document.getElementById(callbackName);
-        if (scriptEl) scriptEl.parentNode.removeChild(scriptEl);
-        delete window[callbackName];
-      }
+      fetch(url)
+        .then(function(response) { 
+          clearTimeout(timeoutId);
+          if (!response.ok) throw new Error('Error de red');
+          return response.json(); 
+        })
+        .then(function(data) {
+          displaySongResultsExtra(data.results || []);
+        })
+        .catch(function(err) {
+          clearTimeout(timeoutId);
+          console.error('Error buscando canciones:', err);
+          displaySongResultsExtra([], 'Error al buscar. Puedes escribir el nombre manualmente.');
+        });
     }
 
     function displaySongResultsExtra(results, errorMsg) {

@@ -137,11 +137,14 @@ function configurarCarpetaDrive() {
     var cache = CacheService.getScriptCache();
     cache.remove('parametros_config');
     
+    var config = obtenerParametros();
+    var driveBaseUrl = config.drive_base_url || 'https://drive.google.com/drive/folders/';
+    
     SpreadsheetApp.getUi().alert(
       '✅ Carpeta de Drive Configurada',
       'ID de carpeta actualizado:\n' + folderId + '\n\n' +
       'URL completa:\n' +
-      'https://drive.google.com/drive/folders/' + folderId + '\n\n' +
+      driveBaseUrl + folderId + '\n\n' +
       'El botón de fotos ahora aparecerá en la página de agradecimiento.',
       SpreadsheetApp.getUi().ButtonSet.OK
     );
@@ -174,8 +177,8 @@ function configurarWebAppURL() {
     return;
   }
   
-  // URL de la Web App
-  var webappUrl = 'https://script.google.com/macros/s/AKfycbx0aWVTaYdjjbZrb2HxmiG9ncjn6KDy2R2zBmYLvq-RAM0TcMkjdONXW4C4jkFZMPkK0A/exec';
+  // URL de la Web App - ACTUALIZAR DESPUÉS DEL DEPLOYMENT
+  var webappUrl = ScriptApp.getService().getUrl();
   
   var datos = hoja.getDataRange().getValues();
   var actualizado = false;
@@ -503,206 +506,9 @@ function obtenerParametro(clave, defaultValue) {
 }
 
 /**
- * Actualiza el timeline con descripciones más emotivas y detalladas.
- * Ejecutar manualmente para actualizar los eventos del día.
- * 
- * IMPORTANTE: Esta función SOBRESCRIBE los valores existentes del timeline.
- */
-function actualizarTimelineMejorado() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var hoja = ss.getSheetByName('Parametros');
-  
-  if (!hoja) {
-    Logger.log('❌ Error: La hoja Parametros no existe');
-    return { success: false, error: 'Hoja Parametros no encontrada' };
-  }
-  
-  // Nuevo timeline mejorado
-  var nuevoTimeline = {
-    'timeline_1': '12:30 PM|Bienvenida',
-    'timeline_2': '1:00 PM|El "Sí, acepto" & bendición de Dios',
-    'timeline_3': '2:00 PM|Abrazos, fotos y cócteles',
-    'timeline_4': '3:00 PM|Palabras de amor y brindis',
-    'timeline_5': '4:00 PM|Almuerzo como esposos',
-    'timeline_6': '5:00 PM|¡A bailar se ha dicho!',
-    'timeline_7': '7:00 PM|Fin de un día mágico'
-  };
-  
-  var datos = hoja.getDataRange().getValues();
-  var actualizados = 0;
-  var agregados = 0;
-  
-  // Buscar y actualizar/agregar cada timeline
-  for (var clave in nuevoTimeline) {
-    var encontrado = false;
-    var valor = nuevoTimeline[clave];
-    
-    // Buscar si ya existe
-    for (var i = 1; i < datos.length; i++) {
-      if (datos[i][1] === clave) {
-        // Actualizar valor existente
-        hoja.getRange(i + 1, 3).setValue(valor);
-        actualizados++;
-        encontrado = true;
-        Logger.log('✅ Actualizado: ' + clave + ' = ' + valor);
-        break;
-      }
-    }
-    
-    // Si no existe, agregarlo
-    if (!encontrado) {
-      hoja.appendRow(['Timeline', clave, valor, 'Formato: HORA|DESCRIPCIÓN']);
-      agregados++;
-      Logger.log('✅ Agregado: ' + clave + ' = ' + valor);
-    }
-  }
-  
-  // Refrescar caché
-  var cache = CacheService.getScriptCache();
-  cache.remove('parametros_config');
-  
-  var mensaje = '✅ Timeline actualizado!\n\n' +
-    'Eventos actualizados: ' + actualizados + '\n' +
-    'Eventos agregados: ' + agregados + '\n\n' +
-    'Nuevo timeline:\n' +
-    '• 12:30 PM - Bienvenida\n' +
-    '• 1:00 PM - El "Sí, acepto" & bendición de Dios\n' +
-    '• 2:00 PM - Abrazos, fotos y cócteles\n' +
-    '• 3:00 PM - Palabras de amor y brindis\n' +
-    '• 4:00 PM - Almuerzo como esposos\n' +
-    '• 5:00 PM - ¡A bailar se ha dicho!\n' +
-    '• 7:00 PM - Fin de un día mágico';
-  
-  Logger.log('');
-  Logger.log('═══════════════════════════════════════');
-  Logger.log(mensaje);
-  Logger.log('═══════════════════════════════════════');
-  
-  try {
-    SpreadsheetApp.getUi().alert('✅ Timeline Actualizado', mensaje, SpreadsheetApp.getUi().ButtonSet.OK);
-  } catch (e) {
-    // Si no hay UI disponible (ejecutando desde Apps Script), solo usar Logger
-    Logger.log('ℹ️ Ejecutado desde Apps Script - revisa el Logger para ver resultados');
-  }
-  
-  return { 
-    success: true, 
-    actualizados: actualizados, 
-    agregados: agregados 
-  };
-}
-
-/**
- * Actualiza los parámetros agregando nuevos sin sobrescribir los existentes.
- * Ejecutar manualmente cuando se agreguen nuevos parámetros.
- */
-function actualizarParametros() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var hoja = ss.getSheetByName('Parametros');
-  
-  if (!hoja) {
-    SpreadsheetApp.getUi().alert(
-      '❌ Error',
-      'La hoja "Parametros" no existe.\n\nEjecuta primero: inicializarParametros()',
-      SpreadsheetApp.getUi().ButtonSet.OK
-    );
-    return;
-  }
-  
-  // Nuevos parámetros a agregar
-  var nuevosParametros = [
-    ['Historia', 'historia_foto_url', 'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=400&h=400&fit=crop', 'URL de la foto circular de la pareja (400x400px recomendado)'],
-    ['Historia', 'historia_foto_alt', 'Jennifer y Nicolás', 'Texto alternativo para la foto'],
-    ['Historia', 'historia_titulo', 'Nuestra Historia', 'Título de la sección de historia'],
-    
-    // UBICACIÓN - Títulos
-    ['Ubicación', 'ubicacion_titulo', '¿Dónde nos encontramos?', 'Título de la sección de ubicación'],
-    
-    // TIMELINE - Títulos
-    ['Timeline', 'timeline_titulo', 'Programa del Día', 'Título de la sección de timeline'],
-    
-    // GALERÍA - Títulos
-    ['Galería', 'galeria_titulo', 'Nuestros Momentos', 'Título de la sección de galería'],
-    ['Galería', 'galeria_subtitulo', 'Algunos recuerdos que queremos compartir con ustedes', 'Subtítulo de la galería'],
-    
-    // SUBIR FOTOS
-    ['Subir Fotos', 'subir_fotos_titulo', 'Comparte tus Fotos', 'Título de la sección para subir fotos'],
-    ['Branding', 'app_titulo', 'Boda Jennifer y Nicolás', 'Título de la aplicación (aparece en todas las páginas)'],
-    ['Branding', 'app_subtitulo', '15 de agosto de 2026', 'Subtítulo de la aplicación'],
-    ['Branding', 'favicon_url', 'https://images.unsplash.com/photo-1519741497674-611481863552?w=180', 'URL del favicon (icono del navegador)'],
-    ['Colores', 'color_forest', '#1a2e22', 'Color principal verde oscuro'],
-    ['Colores', 'color_forest_mid', '#243d2e', 'Color verde oscuro medio'],
-    ['Colores', 'color_forest_lite', '#2d5a3d', 'Color verde oscuro claro'],
-    ['Colores', 'color_sage', '#7a9e7e', 'Color verde salvia'],
-    ['Colores', 'color_sage_lite', '#a8c5ab', 'Color verde salvia claro'],
-    ['Colores', 'color_cream', '#f7f0e6', 'Color crema principal'],
-    ['Colores', 'color_cream_deep', '#ede3d5', 'Color crema profundo'],
-    ['Colores', 'color_off_white', '#faf6f0', 'Color blanco roto'],
-    ['Colores', 'color_gold', '#c9a96e', 'Color dorado principal'],
-    ['Colores', 'color_gold_lite', '#e0c898', 'Color dorado claro'],
-    ['Colores', 'color_gold_dark', '#a07840', 'Color dorado oscuro'],
-    ['Colores', 'color_rose', '#d4a5a5', 'Color rosa'],
-    ['Colores', 'color_rose_lite', '#e8c4c4', 'Color rosa claro'],
-    ['Colores', 'color_text_dark', '#1a1a1a', 'Color texto oscuro'],
-    ['Colores', 'color_text_mid', '#4a4a4a', 'Color texto medio'],
-    ['Colores', 'color_text_muted', '#7a7a7a', 'Color texto atenuado']
-  ];
-  
-  var datos = hoja.getDataRange().getValues();
-  var clavesExistentes = {};
-  
-  // Mapear claves existentes
-  for (var i = 1; i < datos.length; i++) {
-    clavesExistentes[datos[i][1]] = true;
-  }
-  
-  var agregados = 0;
-  
-  // Agregar solo los que no existen
-  for (var j = 0; j < nuevosParametros.length; j++) {
-    var clave = nuevosParametros[j][1];
-    if (!clavesExistentes[clave]) {
-      hoja.appendRow(nuevosParametros[j]);
-      agregados++;
-      Logger.log('✅ Agregado: ' + clave);
-    } else {
-      Logger.log('⏭️ Ya existe: ' + clave);
-    }
-  }
-  
-  if (agregados > 0) {
-    // Refrescar caché
-    var cache = CacheService.getScriptCache();
-    cache.remove('parametros_config');
-    
-    SpreadsheetApp.getUi().alert(
-      '✅ Parámetros Actualizados',
-      agregados + ' nuevo(s) parámetro(s) agregado(s):\n\n' +
-      '• historia_foto_url\n' +
-      '• historia_foto_alt\n' +
-      '• app_titulo\n' +
-      '• app_subtitulo\n' +
-      '• favicon_url\n\n' +
-      'Puedes editar los valores en la hoja Parametros.',
-      SpreadsheetApp.getUi().ButtonSet.OK
-    );
-    Logger.log('✅ Total agregado: ' + agregados + ' parámetros');
-  } else {
-    SpreadsheetApp.getUi().alert(
-      'ℹ️ Sin Cambios',
-      'Todos los parámetros ya existen. No se requieren actualizaciones.',
-      SpreadsheetApp.getUi().ButtonSet.OK
-    );
-    Logger.log('ℹ️ No se requirieron actualizaciones');
-  }
-}
-
-/**
  * Inicializa la hoja de Parámetros con todos los valores configurables.
  * Ejecutar manualmente desde el editor de GAS la primera vez.
  * Esta función es IDEMPOTENTE: si la hoja ya existe, no la sobrescribe.
- * 
- * IMPORTANTE: Si ejecutas desde Apps Script (no desde Sheets), usa inicializarParametrosSinUI()
  */
 function inicializarParametros() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -710,21 +516,15 @@ function inicializarParametros() {
   
   // Si ya existe, preguntar si quiere sobrescribir
   if (hoja) {
-    try {
-      var ui = SpreadsheetApp.getUi();
-      var respuesta = ui.alert(
-        'La hoja Parametros ya existe',
-        '¿Deseas sobrescribirla? Se perderán los cambios actuales.',
-        ui.ButtonSet.YES_NO
-      );
-      if (respuesta !== ui.Button.YES) {
-        Logger.log('Operación cancelada por el usuario');
-        return;
-      }
-    } catch (e) {
-      // Si falla getUi(), significa que se está ejecutando desde Apps Script
-      Logger.log('⚠️ No se puede usar UI desde este contexto. Usa inicializarParametrosSinUI() en su lugar.');
-      throw new Error('No se puede ejecutar desde Apps Script. Usa inicializarParametrosSinUI() o ejecuta desde Google Sheets (Extensiones → Apps Script)');
+    var ui = SpreadsheetApp.getUi();
+    var respuesta = ui.alert(
+      'La hoja Parametros ya existe',
+      '¿Deseas sobrescribirla? Se perderán los cambios actuales.',
+      ui.ButtonSet.YES_NO
+    );
+    if (respuesta !== ui.Button.YES) {
+      Logger.log('Operación cancelada por el usuario');
+      return;
     }
     ss.deleteSheet(hoja);
   }
@@ -786,34 +586,16 @@ function inicializarParametros() {
     ['Fotos', 'galeria_foto_6', 'https://images.unsplash.com/photo-1522413452208-996ff3f3e740?w=800', 'URL de foto 6 de la galería'],
     
     // MÚSICA
-    ['Música', 'musica_fondo_url', 'https://drive.google.com/uc?export=download&id=1o5SUT5VOa_-6KuddhnfWwl_PW6DrUqI0', 'URL del archivo de música de fondo (Google Drive o MP3 directo)'],
+    ['Música', 'musica_url', 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', 'URL del archivo de música de fondo'],
     ['Música', 'musica_titulo', 'Música de Fondo', 'Título de la canción (opcional)'],
-    
-    // DRESSCODE
-    ['Dresscode', 'dresscode_titulo', 'Dress Code', 'Título de la sección de código de vestimenta'],
-    ['Dresscode', 'dresscode_subtitulo', 'Traje formal · Vestido largo', 'Subtítulo con descripción del dress code'],
-    ['Dresscode', 'dresscode_color_1', '#ffffff', 'Color 1 reservado (código hexadecimal)'],
-    ['Dresscode', 'dresscode_color_1_nombre', 'Blanco', 'Nombre del color 1'],
-    ['Dresscode', 'dresscode_color_2', '#f7f0e6', 'Color 2 reservado (código hexadecimal)'],
-    ['Dresscode', 'dresscode_color_2_nombre', 'Crema', 'Nombre del color 2'],
-    ['Dresscode', 'dresscode_color_3', '#7a9e7e', 'Color 3 reservado (código hexadecimal)'],
-    ['Dresscode', 'dresscode_color_3_nombre', 'Verde', 'Nombre del color 3'],
-    ['Dresscode', 'dresscode_nota', 'Reservado para los novios', 'Nota sobre los colores reservados'],
-    ['Dresscode', 'dresscode_card_1_icono', '🔞', 'Emoji/icono para tarjeta 1'],
-    ['Dresscode', 'dresscode_card_1_texto', 'Solo adultos', 'Texto para tarjeta 1'],
-    ['Dresscode', 'dresscode_card_2_icono', '💌', 'Emoji/icono para tarjeta 2'],
-    ['Dresscode', 'dresscode_card_2_texto', 'Lluvia de sobres', 'Texto para tarjeta 2'],
-    
-    // RSVP
-    ['RSVP', 'rsvp_pregunta', '¿Nos acompañas,', 'Pregunta de confirmación (sin el nombre del invitado)'],
-    ['RSVP', 'rsvp_subtitulo', 'Tu presencia es el mejor regalo que nos puedes dar.', 'Subtítulo del RSVP'],
     
     // CONTACTO
     ['Contacto', 'whatsapp_numero', '573213837837', 'Número de WhatsApp (con código de país, sin +)'],
     ['Contacto', 'whatsapp_mensaje_default', 'Hola, tengo una pregunta sobre la boda', 'Mensaje por defecto de WhatsApp'],
     
     // GOOGLE DRIVE
-    ['Google Drive', 'drive_folder_id', 'FOLDER_ID', 'ID de la carpeta de Google Drive para fotos (reemplazar FOLDER_ID)'],
+    ['Google Drive', 'drive_folder_id', '', 'ID de la carpeta de Google Drive para fotos (configurar con configurarDriveFolder)'],
+    ['Google Drive', 'drive_base_url', 'https://drive.google.com/drive/folders/', 'URL base de Google Drive (normalmente no cambiar)'],
     
     // DEPLOYMENT
     ['Deployment', 'webapp_url', 'https://script.google.com/macros/s/TU_DEPLOYMENT_ID/exec', 'URL de la Web App desplegada (obtener después del primer deployment)'],
@@ -821,6 +603,7 @@ function inicializarParametros() {
     // REDES SOCIALES
     ['Redes Sociales', 'share_text', '¡Estás invitado a la boda de Jennifer & Nicolás! 💍 15 de agosto de 2026', 'Texto para compartir en redes'],
     ['Redes Sociales', 'og_image_url', 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1200', 'Imagen para Open Graph (compartir)'],
+    ['Redes Sociales', 'whatsapp_url', 'https://wa.me/573213837837?text=Hola, tengo una pregunta sobre la boda', 'URL de WhatsApp con número y mensaje predefinido'],
     
     // MENSAJES - Hero
     ['Mensajes', 'hero_eyebrow', 'Nos Casamos', 'Texto pequeño arriba de los nombres'],
@@ -879,174 +662,6 @@ function inicializarParametros() {
   
   SpreadsheetApp.getUi().alert('✅ Hoja Parametros creada exitosamente!\n\nAhora puedes editar los valores en la columna "Valor".');
   Logger.log('✅ Hoja Parametros inicializada con ' + parametros.length + ' parámetros');
-}
-
-/**
- * Versión de inicializarParametros que NO usa UI.
- * Usar esta función cuando ejecutes desde el editor de Apps Script.
- * SOBRESCRIBE la hoja Parametros sin preguntar.
- */
-function inicializarParametrosSinUI() {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var hoja = ss.getSheetByName('Parametros');
-  
-  // Si ya existe, eliminarla sin preguntar
-  if (hoja) {
-    Logger.log('⚠️ La hoja Parametros ya existe. Será sobrescrita.');
-    ss.deleteSheet(hoja);
-  }
-  
-  // Crear hoja nueva
-  hoja = ss.insertSheet('Parametros');
-  
-  // Encabezados
-  hoja.getRange(1, 1, 1, 4).setValues([['Categoría', 'Clave', 'Valor', 'Descripción']]);
-  hoja.getRange(1, 1, 1, 4).setFontWeight('bold').setBackground('#1a2e22').setFontColor('#f7f0e6');
-  
-  // Datos de parámetros (mismos que inicializarParametros)
-  var parametros = [
-    // INFORMACIÓN BÁSICA
-    ['Básico', 'nombre_novia', 'Jennifer', 'Nombre de la novia'],
-    ['Básico', 'nombre_novio', 'Nicolás', 'Nombre del novio'],
-    ['Básico', 'fecha_boda', '2026-08-15', 'Fecha de la boda (YYYY-MM-DD)'],
-    ['Básico', 'hora_boda', '19:00', 'Hora de la boda (HH:MM formato 24h)'],
-    ['Básico', 'fecha_limite_rsvp', '2026-06-15', 'Fecha límite para confirmar asistencia'],
-    
-    // UBICACIÓN
-    ['Ubicación', 'venue_nombre', 'Hacienda Angelus Campestre', 'Nombre del lugar del evento'],
-    ['Ubicación', 'venue_direccion', 'Vía Guaymaral, Cl. 235 #Km 5', 'Dirección completa'],
-    ['Ubicación', 'venue_ciudad', 'Bogotá', 'Ciudad'],
-    ['Ubicación', 'venue_pais', 'Colombia', 'País'],
-    ['Ubicación', 'venue_maps_url', 'https://maps.google.com/?q=Hacienda+Angelus+Campestre+Bogota', 'Link de Google Maps'],
-    
-    // TIMELINE
-    ['Timeline', 'timeline_1', '12:30 PM|Bienvenida', 'Formato: HORA|DESCRIPCIÓN'],
-    ['Timeline', 'timeline_2', '1:00 PM|Ceremonia', 'Formato: HORA|DESCRIPCIÓN'],
-    ['Timeline', 'timeline_3', '2:00 PM|Fotos y Cóctel', 'Formato: HORA|DESCRIPCIÓN'],
-    ['Timeline', 'timeline_4', '4:00 PM|Almuerzo', 'Formato: HORA|DESCRIPCIÓN'],
-    ['Timeline', 'timeline_5', '7:00 PM|Fin', 'Formato: HORA|DESCRIPCIÓN'],
-    
-    // DRESS CODE
-    ['Dress Code', 'dresscode_descripcion', 'Traje formal · Vestido largo', 'Descripción del código de vestimenta'],
-    ['Dress Code', 'dresscode_colores_reservados', 'Blanco, Crema, Verde', 'Colores reservados para los novios'],
-    ['Dress Code', 'dresscode_nota', 'Evento solo para adultos (18+)', 'Nota adicional'],
-    
-    // HISTORIA
-    ['Historia', 'historia_texto', 'Jennifer y Nicolás se conocieron en una tarde de lluvia bogotana, cuando el destino los cruzó en el mismo café. Entre conversaciones, risas y sueños compartidos, descubrieron que estaban destinados a caminar juntos. Hoy, rodeados de su familia peluda —una Malamute y dos gatos negros— están listos para dar el siguiente paso en su historia de amor y quieren celebrarlo con las personas más importantes de sus vidas: ¡ustedes!', 'Historia de la pareja'],
-    ['Historia', 'historia_familia', 'Jennifer, Nicolás, su Malamute y sus dos gatos negros 🖤', 'Descripción de la familia'],
-    ['Historia', 'historia_foto_url', 'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=400&h=400&fit=crop', 'URL de la foto circular de la pareja (400x400px recomendado)'],
-    ['Historia', 'historia_foto_alt', 'Jennifer y Nicolás', 'Texto alternativo para la foto'],
-    
-    // FOTOS - Hero Carousel
-    ['Fotos', 'hero_foto_1', 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1200', 'URL de foto 1 del carrusel principal'],
-    ['Fotos', 'hero_foto_2', 'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=1200', 'URL de foto 2 del carrusel principal'],
-    ['Fotos', 'hero_foto_3', 'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=1200', 'URL de foto 3 del carrusel principal'],
-    ['Fotos', 'hero_foto_4', 'https://images.unsplash.com/photo-1520854221256-17451cc331bf?w=1200', 'URL de foto 4 del carrusel principal'],
-    ['Fotos', 'hero_foto_5', 'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=1200', 'URL de foto 5 del carrusel principal'],
-    
-    // FOTOS - Galería
-    ['Fotos', 'galeria_foto_1', 'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800', 'URL de foto 1 de la galería'],
-    ['Fotos', 'galeria_foto_2', 'https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800', 'URL de foto 2 de la galería'],
-    ['Fotos', 'galeria_foto_3', 'https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=800', 'URL de foto 3 de la galería'],
-    ['Fotos', 'galeria_foto_4', 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800', 'URL de foto 4 de la galería'],
-    ['Fotos', 'galeria_foto_5', 'https://images.unsplash.com/photo-1460978812857-470ed1c77af0?w=800', 'URL de foto 5 de la galería'],
-    ['Fotos', 'galeria_foto_6', 'https://images.unsplash.com/photo-1522413452208-996ff3f3e740?w=800', 'URL de foto 6 de la galería'],
-    
-    // MÚSICA
-    ['Música', 'musica_fondo_url', 'https://drive.google.com/uc?export=download&id=1o5SUT5VOa_-6KuddhnfWwl_PW6DrUqI0', 'URL del archivo de música de fondo (Google Drive o MP3 directo)'],
-    ['Música', 'musica_titulo', 'Música de Fondo', 'Título de la canción (opcional)'],
-    
-    // DRESSCODE
-    ['Dresscode', 'dresscode_titulo', 'Dress Code', 'Título de la sección de código de vestimenta'],
-    ['Dresscode', 'dresscode_subtitulo', 'Traje formal · Vestido largo', 'Subtítulo con descripción del dress code'],
-    ['Dresscode', 'dresscode_color_1', '#ffffff', 'Color 1 reservado (código hexadecimal)'],
-    ['Dresscode', 'dresscode_color_1_nombre', 'Blanco', 'Nombre del color 1'],
-    ['Dresscode', 'dresscode_color_2', '#f7f0e6', 'Color 2 reservado (código hexadecimal)'],
-    ['Dresscode', 'dresscode_color_2_nombre', 'Crema', 'Nombre del color 2'],
-    ['Dresscode', 'dresscode_color_3', '#7a9e7e', 'Color 3 reservado (código hexadecimal)'],
-    ['Dresscode', 'dresscode_color_3_nombre', 'Verde', 'Nombre del color 3'],
-    ['Dresscode', 'dresscode_nota', 'Reservado para los novios', 'Nota sobre los colores reservados'],
-    ['Dresscode', 'dresscode_card_1_icono', '🔞', 'Emoji/icono para tarjeta 1'],
-    ['Dresscode', 'dresscode_card_1_texto', 'Solo adultos', 'Texto para tarjeta 1'],
-    ['Dresscode', 'dresscode_card_2_icono', '💌', 'Emoji/icono para tarjeta 2'],
-    ['Dresscode', 'dresscode_card_2_texto', 'Lluvia de sobres', 'Texto para tarjeta 2'],
-    
-    // RSVP
-    ['RSVP', 'rsvp_pregunta', '¿Nos acompañas,', 'Pregunta de confirmación (sin el nombre del invitado)'],
-    ['RSVP', 'rsvp_subtitulo', 'Tu presencia es el mejor regalo que nos puedes dar.', 'Subtítulo del RSVP'],
-    
-    // CONTACTO
-    ['Contacto', 'whatsapp_numero', '573213837837', 'Número de WhatsApp (con código de país, sin +)'],
-    ['Contacto', 'whatsapp_mensaje_default', 'Hola, tengo una pregunta sobre la boda', 'Mensaje por defecto de WhatsApp'],
-    
-    // GOOGLE DRIVE
-    ['Google Drive', 'drive_folder_id', 'FOLDER_ID', 'ID de la carpeta de Google Drive para fotos (reemplazar FOLDER_ID)'],
-    
-    // DEPLOYMENT
-    ['Deployment', 'webapp_url', 'https://script.google.com/macros/s/TU_DEPLOYMENT_ID/exec', 'URL de la Web App desplegada (obtener después del primer deployment)'],
-    
-    // REDES SOCIALES
-    ['Redes Sociales', 'share_text', '¡Estás invitado a la boda de Jennifer & Nicolás! 💍 15 de agosto de 2026', 'Texto para compartir en redes'],
-    ['Redes Sociales', 'og_image_url', 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1200', 'Imagen para Open Graph (compartir)'],
-    
-    // MENSAJES - Hero
-    ['Mensajes', 'hero_eyebrow', 'Nos Casamos', 'Texto pequeño arriba de los nombres'],
-    ['Mensajes', 'hero_fecha_texto', '15 · 08 · 2026', 'Fecha en formato visual'],
-    
-    // MENSAJES - Éxito
-    ['Mensajes', 'exito_titulo', '¡Tu presencia ya está sellada!', 'Título del mensaje de éxito'],
-    ['Mensajes', 'exito_subtitulo', 'Nos vemos el 15 de agosto de 2026 en la Hacienda Angelus Campestre.', 'Subtítulo del mensaje de éxito'],
-    ['Mensajes', 'exito_ubicacion', 'Sabana de Bogotá · Colombia', 'Ubicación en mensaje de éxito'],
-    
-    // MENSAJES - Carta Confirmación
-    ['Mensajes', 'carta_confirmacion_p1', '¡Gracias por confirmar tu asistencia! No sabes la alegría que nos da saber que estarás con nosotros en este día tan especial.', 'Párrafo 1 de carta de confirmación'],
-    ['Mensajes', 'carta_confirmacion_p2', 'Tu presencia es uno de los regalos más valiosos que podríamos recibir. Estamos emocionados de compartir contigo el inicio de esta nueva aventura, rodeados del amor de quienes más queremos.', 'Párrafo 2 de carta de confirmación'],
-    ['Mensajes', 'carta_confirmacion_p3', 'Nos vemos el 15 de agosto de 2026 en la Hacienda Angelus Campestre. Prepárate para una celebración llena de amor, risas y momentos inolvidables.', 'Párrafo 3 de carta de confirmación'],
-    
-    // MENSAJES - Carta Post-Boda
-    ['Mensajes', 'carta_postboda_p1', 'Hoy queremos tomarnos un momento para agradecerte de corazón por haber sido parte de nuestro día especial. Tu presencia hizo que el 15 de agosto de 2026 fuera aún más mágico de lo que habíamos soñado.', 'Párrafo 1 de carta post-boda'],
-    ['Mensajes', 'carta_postboda_p2', 'Cada sonrisa, cada abrazo y cada palabra de felicitación quedará grabado en nuestros corazones para siempre. Fue un honor compartir contigo el inicio de esta nueva aventura, rodeados del amor de quienes más queremos.', 'Párrafo 2 de carta post-boda'],
-    ['Mensajes', 'carta_postboda_p3', 'Gracias por celebrar con nosotros, por tu amistad incondicional y por los hermosos recuerdos que creamos juntos. Gracias por ser parte de nuestra familia y de nuestra historia.', 'Párrafo 3 de carta post-boda'],
-    
-    // MENSAJES - Email
-    ['Mensajes', 'email_saludo', 'Tu asistencia ha sido confirmada exitosamente. Nos llena de alegria contar contigo en este dia tan especial!', 'Saludo en email de confirmación'],
-    ['Mensajes', 'email_qr_texto', 'Presenta este codigo QR en la entrada del evento', 'Texto debajo del QR'],
-    ['Mensajes', 'email_cierre', 'Sera un honor compartir este momento tan especial contigo.', 'Mensaje de cierre en email'],
-    ['Mensajes', 'email_despedida', 'Nos vemos el 15 de agosto!', 'Despedida en email'],
-    
-    // NOTAS IMPORTANTES
-    ['Notas', 'nota_1', 'Evento solo para adultos (18+)', 'Nota importante 1'],
-    ['Notas', 'nota_2', 'Lluvia de sobres', 'Nota importante 2'],
-    ['Notas', 'nota_3', 'Guarda este correo para presentar tu QR', 'Nota importante 3'],
-    ['Notas', 'nota_4', 'Adjuntamos archivo .ics para agregar a tu calendario', 'Nota importante 4']
-  ];
-  
-  // Insertar datos
-  hoja.getRange(2, 1, parametros.length, 4).setValues(parametros);
-  
-  // Formatear
-  hoja.setColumnWidth(1, 150);  // Categoría
-  hoja.setColumnWidth(2, 250);  // Clave
-  hoja.setColumnWidth(3, 400);  // Valor
-  hoja.setColumnWidth(4, 350);  // Descripción
-  
-  // Alternar colores de fila
-  for (var i = 2; i <= parametros.length + 1; i++) {
-    if (i % 2 === 0) {
-      hoja.getRange(i, 1, 1, 4).setBackground('#f7f0e6');
-    }
-  }
-  
-  // Congelar primera fila
-  hoja.setFrozenRows(1);
-  
-  // Proteger columnas Categoría, Clave y Descripción (solo editar Valor)
-  var protection = hoja.protect().setDescription('Protección de estructura');
-  protection.setUnprotectedRanges([hoja.getRange(2, 3, parametros.length, 1)]);
-  
-  Logger.log('✅ Hoja Parametros inicializada con ' + parametros.length + ' parámetros');
-  Logger.log('ℹ️ Revisa el Logger para confirmar. No se mostró alerta porque se ejecutó desde Apps Script.');
-  return { success: true, parametros: parametros.length };
 }
 
 /**
@@ -1289,13 +904,15 @@ function doGet_(params, ss, now) {
   // 3.1 Rama ?page=dashboard
   if (params.page === 'dashboard') {
     var metricas = getDashboardData_(ss);
+    
+    // Calcular porcentajes en el servidor para evitar problemas con operadores en templates
     metricas.porcentajeConfirmados = metricas.totalInvitados > 0 ? Math.round(metricas.totalConfirmados / metricas.totalInvitados * 100) : 0;
-    metricas.porcentajePendientes  = metricas.totalInvitados > 0 ? Math.round(metricas.totalPendientes  / metricas.totalInvitados * 100) : 0;
-
-    // Generar HTML directamente en el backend — sin templates, sin ReferenceError posible
-    var html = buildDashboardHtml_(metricas, config);
-    return HtmlService.createHtmlOutput(html)
-      .setTitle('Dashboard — Boda ' + (config.nombre_novia || 'Jennifer') + ' & ' + (config.nombre_novio || 'Nicolás'));
+    metricas.porcentajePendientes = metricas.totalInvitados > 0 ? Math.round(metricas.totalPendientes / metricas.totalInvitados * 100) : 0;
+    
+    var template = HtmlService.createTemplateFromFile('Dashboard');
+    template.metricas = metricas;
+    template.config = config;
+    return template.evaluate().setTitle('Dashboard — Boda ' + config.nombre_novia + ' & ' + config.nombre_novio);
   }
 
   // 3.2 Fechas importantes (desde parámetros)
@@ -1337,9 +954,18 @@ function doGet_(params, ss, now) {
 
   // 3.4 DESPUÉS DE LA BODA: Mostrar carta de agradecimiento post-boda
   if (despuesDeLaBoda) {
-    var html = buildAgradecimientoHtml_(fila[1], String(id), 'postboda', config);
-    return HtmlService.createHtmlOutput(html)
-      .setTitle('Gracias por Acompañarnos — ' + (config.nombre_novia || 'Jennifer') + ' & ' + (config.nombre_novio || 'Nicolás'));
+    var templateData = {
+      nombre: fila[1],
+      id: String(id),
+      modo: 'postboda'
+    };
+    var template = HtmlService.createTemplateFromFile('Agradecimiento');
+    template.templateData = JSON.stringify(templateData);
+    // Inyectar config como script para que esté disponible en el cliente
+    var configScript = '<script>window.config = ' + JSON.stringify(config) + ';</script>';
+    var html = template.evaluate().getContent();
+    html = html.replace('</head>', configScript + '</head>');
+    return HtmlService.createHtmlOutput(html).setTitle('Gracias por Acompañarnos — ' + config.nombre_novia + ' & ' + config.nombre_novio);
   }
 
   // 3.5 ANTES DE LA BODA: Verificación de fecha límite RSVP
@@ -1349,9 +975,18 @@ function doGet_(params, ss, now) {
 
   // 3.6 Si ya confirmó, mostrar carta de agradecimiento por confirmar
   if (fila[3] === 'Confirmado') {
-    var html = buildAgradecimientoHtml_(fila[1], String(id), 'confirmacion', config);
-    return HtmlService.createHtmlOutput(html)
-      .setTitle('¡Gracias por Confirmar! — ' + (config.nombre_novia || 'Jennifer') + ' & ' + (config.nombre_novio || 'Nicolás'));
+    var templateData = {
+      nombre: fila[1],
+      id: String(id),
+      modo: 'confirmacion'
+    };
+    var template = HtmlService.createTemplateFromFile('Agradecimiento');
+    template.templateData = JSON.stringify(templateData);
+    // Inyectar config como script para que esté disponible en el cliente
+    var configScript = '<script>window.config = ' + JSON.stringify(config) + ';</script>';
+    var html = template.evaluate().getContent();
+    html = html.replace('</head>', configScript + '</head>');
+    return HtmlService.createHtmlOutput(html).setTitle('¡Gracias por Confirmar! — ' + config.nombre_novia + ' & ' + config.nombre_novio);
   }
 
   // 3.7 Mostrar formulario RSVP (fila[3] === 'Pendiente' o vacío)
@@ -1471,34 +1106,16 @@ function guardarConfirmacion_(datos, ss, now) {
     // Preparar lista de invitados para el correo
     var invitadosParaCorreo = [{ nombre: datosInv[filaIdx][1], id: datos.id }];
     
-    // Buscar TODOS los invitados vinculados (no solo uno)
-    // Buscar por ID_Vinculado que coincida con el ID principal O que tenga el mismo ID_Vinculado
-    var idPrincipal = datos.id;
-    var idVinculadoPrincipal = datosInv[filaIdx][2];
-    
-    for (var k = 1; k < datosInv.length; k++) {
-      var idActual = String(datosInv[k][0]);
-      var idVinculadoActual = datosInv[k][2] ? String(datosInv[k][2]) : '';
-      
-      // Saltar el invitado principal
-      if (idActual === idPrincipal) continue;
-      
-      // Agregar si:
-      // 1. Su ID_Vinculado apunta al principal
-      // 2. El principal apunta a él
-      // 3. Ambos apuntan al mismo ID_Vinculado (grupo)
-      var esVinculado = false;
-      
-      if (idVinculadoActual === idPrincipal) {
-        esVinculado = true; // Este invitado apunta al principal
-      } else if (idVinculadoPrincipal && idActual === idVinculadoPrincipal) {
-        esVinculado = true; // El principal apunta a este
-      } else if (idVinculadoPrincipal && idVinculadoActual === idVinculadoPrincipal) {
-        esVinculado = true; // Ambos apuntan al mismo grupo
-      }
-      
-      if (esVinculado && datos.confirmarVinculado === true) {
-        invitadosParaCorreo.push({ nombre: datosInv[k][1], id: idActual });
+    // Si confirmó vinculado, agregarlo a la lista
+    if (datos.confirmarVinculado === true) {
+      var idVinculado = datosInv[filaIdx][2];
+      if (idVinculado) {
+        for (var k = 1; k < datosInv.length; k++) {
+          if (String(datosInv[k][0]) === String(idVinculado)) {
+            invitadosParaCorreo.push({ nombre: datosInv[k][1], id: idVinculado });
+            break;
+          }
+        }
       }
     }
     
@@ -1543,32 +1160,15 @@ function guardarConfirmacion_(datos, ss, now) {
     // 5.3 Actualizar Estado del invitado principal
     hojaInv.getRange(filaIdx + 1, 4).setValue('Confirmado');
 
-    // 5.4 Actualizar Estado de TODOS los vinculados si confirmarVinculado === true
+    // 5.4 Actualizar Estado del vinculado si confirmarVinculado === true
     if (datos.confirmarVinculado === true) {
-      var idPrincipal = datos.id;
-      var idVinculadoPrincipal = datosInv[filaIdx][2];
-      
-      for (var j = 1; j < datosInv.length; j++) {
-        // Saltar el invitado principal
-        if (String(datosInv[j][0]) === String(idPrincipal)) continue;
-        
-        var idActual = String(datosInv[j][0]);
-        var idVinculadoActual = datosInv[j][2] ? String(datosInv[j][2]) : '';
-        
-        // Actualizar si está vinculado
-        var esVinculado = false;
-        
-        if (idVinculadoActual === idPrincipal) {
-          esVinculado = true;
-        } else if (idVinculadoPrincipal && idActual === idVinculadoPrincipal) {
-          esVinculado = true;
-        } else if (idVinculadoPrincipal && idVinculadoActual === idVinculadoPrincipal) {
-          esVinculado = true;
-        }
-        
-        if (esVinculado) {
-          hojaInv.getRange(j + 1, 4).setValue('Confirmado');
-          Logger.log('✅ Vinculado confirmado: ' + datosInv[j][1] + ' (ID: ' + idActual + ')');
+      var idVinculado = datosInv[filaIdx][2];
+      if (idVinculado) {
+        for (var j = 1; j < datosInv.length; j++) {
+          if (String(datosInv[j][0]) === String(idVinculado)) {
+            hojaInv.getRange(j + 1, 4).setValue('Confirmado');
+            break;
+          }
         }
       }
     }
@@ -1674,12 +1274,12 @@ function enviarCorreo_(datos) {
   var tablaInvitados = '';
   if (esMultiple) {
     tablaInvitados = '<div style="background:#fff9f0;border-radius:12px;padding:1.5rem;margin:1.5rem 0;">' +
-      '<h3 style="color:#1a2e22;margin:0 0 1rem;font-size:1.1rem;font-weight:600;text-align:center;">Invitados Confirmados</h3>' +
+      '<h3 style="color:#1a2e22;margin:0 0 1rem;font-size:1.1rem;font-weight:600;text-align:center;">✨ Invitados Confirmados</h3>' +
       '<table style="width:100%;border-collapse:collapse;">';
     
     for (var i = 0; i < invitados.length; i++) {
       tablaInvitados += '<tr style="border-bottom:1px solid rgba(201,169,110,0.2);">' +
-        '<td style="padding:0.75rem 0;color:#1a2e22;font-weight:500;">' + invitados[i].nombre + '</td>' +
+        '<td style="padding:0.75rem 0;color:#1a2e22;font-weight:500;">👤 ' + invitados[i].nombre + '</td>' +
         '<td style="padding:0.75rem 0;color:#7a9e7e;text-align:right;font-size:0.85rem;">ID: ' + invitados[i].id + '</td>' +
         '</tr>';
     }
@@ -1687,9 +1287,9 @@ function enviarCorreo_(datos) {
     tablaInvitados += '</table></div>';
   }
 
-  // Parsear timeline para el .ics y el email (soporta hasta 10 eventos)
+  // Parsear timeline para el .ics y el email
   var timelineItems = [];
-  for (var i = 1; i <= 10; i++) {
+  for (var i = 1; i <= 5; i++) {
     var timeline = config['timeline_' + i];
     if (timeline) {
       var parts = timeline.split('|');
@@ -1761,15 +1361,10 @@ function enviarCorreo_(datos) {
     // Container principal
     '<div style="max-width:600px;margin:0 auto;background:#ffffff;">' +
     
-    // Header con degradado y foto de pareja
+    // Header con degradado
     '<div style="background:linear-gradient(135deg, #1a2e22 0%, #243d2e 100%);padding:3rem 2rem;text-align:center;position:relative;overflow:hidden;">' +
     '<div style="position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(circle at 50% 50%, rgba(201,169,110,0.1) 0%, transparent 70%);"></div>' +
     '<div style="position:relative;z-index:1;">' +
-    // Foto de pareja circular
-    (config.historia_foto_url ? 
-      '<div style="margin-bottom:1.5rem;">' +
-      '<img src="' + config.historia_foto_url + '" alt="' + (config.historia_foto_alt || config.nombre_novia + ' y ' + config.nombre_novio) + '" style="width:120px;height:120px;border-radius:50%;object-fit:cover;border:3px solid #c9a96e;box-shadow:0 8px 24px rgba(0,0,0,0.3);">' +
-      '</div>' : '') +
     '<h1 style="color:#f7f0e6;margin:0 0 0.5rem;font-size:2.5rem;font-weight:400;font-style:italic;font-family:Georgia,serif;letter-spacing:0.02em;">' + config.nombre_novia + ' <span style="color:#c9a96e;font-size:1.1em;">&amp;</span> ' + config.nombre_novio + '</h1>' +
     '<div style="width:80px;height:1px;background:linear-gradient(90deg,transparent,#c9a96e,transparent);margin:1rem auto;"></div>' +
     '<p style="color:#e0c898;margin:0;font-size:0.9rem;letter-spacing:0.15em;text-transform:uppercase;font-weight:300;">' + config.hero_fecha_texto + '</p>' +
@@ -1803,8 +1398,7 @@ function enviarCorreo_(datos) {
     // Ubicación
     '<div style="margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid rgba(201,169,110,0.2);">' +
     '<div style="margin-bottom:0.5rem;">' +
-    '<p style="margin:0 0 0.25rem;font-weight:600;color:#1a2e22;font-size:1.1rem;">Ubicación</p>' +
-    '<p style="margin:0 0 0.25rem;font-weight:600;color:#c9a96e;font-size:1rem;">' + config.venue_nombre + '</p>' +
+    '<p style="margin:0 0 0.25rem;font-weight:600;color:#1a2e22;font-size:1.1rem;">&#128205; ' + config.venue_nombre + '</p>' +
     '<p style="margin:0;color:#4a4a4a;font-size:0.95rem;line-height:1.5;">' + config.venue_direccion + '<br>' + config.venue_ciudad + ', ' + config.venue_pais + '</p>' +
     '<a href="' + config.venue_maps_url + '" style="display:inline-block;margin-top:0.5rem;color:#7a9e7e;text-decoration:none;font-size:0.9rem;font-weight:500;">Ver en Google Maps &rarr;</a>' +
     '</div>' +
@@ -1813,17 +1407,17 @@ function enviarCorreo_(datos) {
     // Programa del día
     '<div style="margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid rgba(201,169,110,0.2);">' +
     '<div>' +
-    '<p style="margin:0 0 0.75rem;font-weight:600;color:#1a2e22;font-size:1.1rem;">Programa del Día</p>' +
+    '<p style="margin:0 0 0.75rem;font-weight:600;color:#1a2e22;font-size:1.1rem;">&#128336; Programa del Dia</p>' +
     '<table style="width:100%;border-collapse:collapse;">' +
     timelineHtml +
     '</table>' +
     '</div>' +
     '</div>' +
     
-    // Código de Vestimenta
+    // Dress Code
     '<div>' +
     '<div>' +
-    '<p style="margin:0 0 0.5rem;font-weight:600;color:#1a2e22;font-size:1.1rem;">Código de Vestimenta</p>' +
+    '<p style="margin:0 0 0.5rem;font-weight:600;color:#1a2e22;font-size:1.1rem;">&#128084; Dress Code</p>' +
     '<p style="margin:0 0 0.5rem;color:#4a4a4a;font-size:0.95rem;">' + config.dresscode_descripcion + '</p>' +
     '<div style="margin-top:0.75rem;">' +
     '<p style="margin:0 0 0.5rem;color:#7a7a7a;font-size:0.85rem;font-style:italic;">Colores reservados: ' + config.dresscode_colores_reservados + '</p>' +
@@ -1835,7 +1429,7 @@ function enviarCorreo_(datos) {
     
     // Notas importantes
     '<div style="background:#fff9f0;border-left:4px solid #c9a96e;padding:1.5rem;margin:2rem 0;border-radius:8px;">' +
-    '<p style="margin:0 0 0.75rem;font-weight:600;color:#1a2e22;font-size:1rem;">Notas Importantes</p>' +
+    '<p style="margin:0 0 0.75rem;font-weight:600;color:#1a2e22;font-size:1rem;">&#128204; Notas Importantes</p>' +
     '<ul style="margin:0;padding-left:1.25rem;color:#4a4a4a;font-size:0.9rem;line-height:1.7;">' +
     '<li style="margin-bottom:0.5rem;">' + config.nota_1 + '</li>' +
     '<li style="margin-bottom:0.5rem;">' + config.nota_2 + '</li>' +
@@ -1976,12 +1570,10 @@ function obtenerInvitadosVinculados_(datos, ss) {
     var datosInv = hojaInv.getDataRange().getValues();
     var invitados = [];
     var invitadoPrincipal = null;
-    var idPrincipal = String(datos.id);
-    var idVinculadoPrincipal = '';
 
     // Buscar el invitado principal
     for (var i = 1; i < datosInv.length; i++) {
-      if (String(datosInv[i][0]) === idPrincipal) {
+      if (String(datosInv[i][0]) === String(datos.id)) {
         invitadoPrincipal = {
           id: datosInv[i][0],
           nombre: datosInv[i][1],
@@ -1989,42 +1581,28 @@ function obtenerInvitadosVinculados_(datos, ss) {
           esPrincipal: true
         };
         invitados.push(invitadoPrincipal);
-        idVinculadoPrincipal = datosInv[i][2] ? String(datosInv[i][2]) : '';
+        
+        // Buscar vinculado
+        var idVinculado = datosInv[i][2];
+        if (idVinculado) {
+          for (var j = 1; j < datosInv.length; j++) {
+            if (String(datosInv[j][0]) === String(idVinculado)) {
+              invitados.push({
+                id: datosInv[j][0],
+                nombre: datosInv[j][1],
+                estado: datosInv[j][3],
+                esPrincipal: false
+              });
+              break;
+            }
+          }
+        }
         break;
       }
     }
 
     if (!invitadoPrincipal) {
       return { success: false, error: 'Invitado no encontrado' };
-    }
-
-    // Buscar TODOS los invitados vinculados
-    for (var j = 1; j < datosInv.length; j++) {
-      var idActual = String(datosInv[j][0]);
-      
-      // Saltar el principal
-      if (idActual === idPrincipal) continue;
-      
-      var idVinculadoActual = datosInv[j][2] ? String(datosInv[j][2]) : '';
-      var esVinculado = false;
-      
-      // Verificar si está vinculado
-      if (idVinculadoActual === idPrincipal) {
-        esVinculado = true; // Este apunta al principal
-      } else if (idVinculadoPrincipal && idActual === idVinculadoPrincipal) {
-        esVinculado = true; // El principal apunta a este
-      } else if (idVinculadoPrincipal && idVinculadoActual === idVinculadoPrincipal) {
-        esVinculado = true; // Ambos apuntan al mismo grupo
-      }
-      
-      if (esVinculado) {
-        invitados.push({
-          id: datosInv[j][0],
-          nombre: datosInv[j][1],
-          estado: datosInv[j][3],
-          esPrincipal: false
-        });
-      }
     }
 
     return { success: true, invitados: invitados };
@@ -2129,11 +1707,10 @@ function cancelarConfirmacion_(datos, ss) {
 
     var datosInv = hojaInv.getDataRange().getValues();
     var filaIdx = -1;
-    var idPrincipal = String(datos.id);
 
     // Buscar el invitado
     for (var i = 1; i < datosInv.length; i++) {
-      if (String(datosInv[i][0]) === idPrincipal) {
+      if (String(datosInv[i][0]) === String(datos.id)) {
         filaIdx = i;
         break;
       }
@@ -2150,34 +1727,19 @@ function cancelarConfirmacion_(datos, ss) {
 
     // Cambiar estado a "Pendiente"
     hojaInv.getRange(filaIdx + 1, 4).setValue('Pendiente');
-    Logger.log('✅ Confirmación cancelada para ID: ' + idPrincipal + ' (' + datosInv[filaIdx][1] + ')');
 
-    // Cambiar estado de TODOS los vinculados también
-    var idVinculadoPrincipal = datosInv[filaIdx][2] ? String(datosInv[filaIdx][2]) : '';
-    
-    for (var j = 1; j < datosInv.length; j++) {
-      // Saltar el principal
-      if (j === filaIdx) continue;
-      
-      var idActual = String(datosInv[j][0]);
-      var idVinculadoActual = datosInv[j][2] ? String(datosInv[j][2]) : '';
-      var esVinculado = false;
-      
-      // Verificar si está vinculado
-      if (idVinculadoActual === idPrincipal) {
-        esVinculado = true;
-      } else if (idVinculadoPrincipal && idActual === idVinculadoPrincipal) {
-        esVinculado = true;
-      } else if (idVinculadoPrincipal && idVinculadoActual === idVinculadoPrincipal) {
-        esVinculado = true;
-      }
-      
-      if (esVinculado && datosInv[j][3] === 'Confirmado') {
-        hojaInv.getRange(j + 1, 4).setValue('Pendiente');
-        Logger.log('✅ Vinculado cancelado: ' + datosInv[j][1] + ' (ID: ' + idActual + ')');
+    // Si tiene vinculado, también cambiar su estado
+    var idVinculado = datosInv[filaIdx][2];
+    if (idVinculado) {
+      for (var j = 1; j < datosInv.length; j++) {
+        if (String(datosInv[j][0]) === String(idVinculado) && datosInv[j][3] === 'Confirmado') {
+          hojaInv.getRange(j + 1, 4).setValue('Pendiente');
+          break;
+        }
       }
     }
 
+    Logger.log('✅ Confirmación cancelada para ID: ' + datos.id);
     return { success: true };
 
   } catch (err) {
@@ -2253,232 +1815,4 @@ function getDashboardData_(ss) {
   }
 
   return metricas;
-}
-
-/**
- * Genera el HTML completo del Dashboard directamente en el backend.
- * Evita cualquier problema de ReferenceError en templates de GAS.
- */
-function buildDashboardHtml_(m, c) {
-  var forest    = c.color_forest     || '#1a2e22';
-  var forestMid = c.color_forest_mid || '#243d2e';
-  var sage      = c.color_sage       || '#7a9e7e';
-  var cream     = c.color_cream      || '#f7f0e6';
-  var creamDeep = c.color_cream_deep || '#ede3d5';
-  var offWhite  = c.color_off_white  || '#faf6f0';
-  var gold      = c.color_gold       || '#c9a96e';
-  var goldLite  = c.color_gold_lite  || '#e0c898';
-  var goldDark  = c.color_gold_dark  || '#a07840';
-  var rose      = c.color_rose       || '#d4a5a5';
-
-  var novia    = c.nombre_novia  || 'Jennifer';
-  var novio    = c.nombre_novio  || 'Nicolás';
-  var subtitulo = c.app_subtitulo || '15 de agosto de 2026';
-  var favicon  = c.favicon_url   || 'https://images.unsplash.com/photo-1519741497674-611481863552?w=180';
-
-  function row(icon, label, val) {
-    return '<li><span class="item-label"><span class="item-icon">' + icon + '</span><span>' + label + '</span></span><span class="count">' + (val || 0) + '</span></li>';
-  }
-
-  return '<!DOCTYPE html><html lang="es"><head>' +
-    '<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>' +
-    '<title>Dashboard \u2014 ' + novia + ' &amp; ' + novio + '</title>' +
-    '<link rel="icon" href="data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><text y=\'0.9em\' font-size=\'90\'>💍</text></svg>">' +
-    '<link rel="preconnect" href="https://fonts.googleapis.com">' +
-    '<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">' +
-    '<style>' +
-    ':root{--forest:' + forest + ';--forest-mid:' + forestMid + ';--sage:' + sage + ';--cream:' + cream + ';--cream-deep:' + creamDeep + ';--off-white:' + offWhite + ';--gold:' + gold + ';--gold-lite:' + goldLite + ';--gold-dark:' + goldDark + ';--rose:' + rose + ';}' +
-    '*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}' +
-    'body{font-family:\'Jost\',sans-serif;background:linear-gradient(135deg,var(--forest) 0%,var(--forest-mid) 100%);color:var(--cream);font-size:16px;min-height:100vh;padding:2rem 1.5rem;}' +
-    '.container{max-width:1200px;margin:0 auto;}' +
-    'header{text-align:center;margin-bottom:3rem;}' +
-    '.eyebrow{font-size:0.7rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem;}' +
-    'h1{font-family:\'Cormorant Garamond\',serif;font-style:italic;font-size:clamp(2rem,6vw,3.5rem);font-weight:400;color:var(--cream);margin-bottom:0.5rem;}' +
-    'h1 .amp{color:var(--gold);}' +
-    '.subtitle{font-size:0.95rem;font-weight:300;color:var(--sage);margin-bottom:1.5rem;}' +
-    '.gold-rule{width:100px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:1.5rem auto;}' +
-    '.btn-refresh{display:inline-flex;align-items:center;gap:0.5rem;padding:0.75rem 1.8rem;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:var(--forest);border:none;border-radius:50px;font-size:0.85rem;font-weight:400;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;min-height:48px;box-shadow:0 4px 20px rgba(201,169,110,0.4);}' +
-    '.hero-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;margin-bottom:3rem;}' +
-    '.stat-card{background:rgba(255,255,255,0.06);border:1px solid rgba(201,169,110,0.2);border-radius:24px;padding:2.5rem 2rem;text-align:center;}' +
-    '.stat-icon{font-size:2.5rem;margin-bottom:1rem;display:block;}' +
-    '.stat-number{font-family:\'Cormorant Garamond\',serif;font-size:clamp(3.5rem,8vw,5rem);font-weight:400;color:var(--gold);line-height:1;margin-bottom:0.5rem;}' +
-    '.stat-label{font-size:0.95rem;font-weight:300;color:var(--sage);letter-spacing:0.08em;text-transform:uppercase;}' +
-    '.stat-card--confirmed .stat-number{color:#7fb685;}' +
-    '.stat-card--pending .stat-number{color:var(--gold-lite);}' +
-    '.progress-section{background:rgba(255,255,255,0.06);border:1px solid rgba(201,169,110,0.2);border-radius:24px;padding:2.5rem;margin-bottom:3rem;}' +
-    '.progress-section h2{font-family:\'Cormorant Garamond\',serif;font-style:italic;font-size:1.8rem;font-weight:400;color:var(--cream);margin-bottom:2rem;text-align:center;}' +
-    '.progress-row{margin-bottom:2rem;}' +
-    '.progress-row-label{display:flex;justify-content:space-between;align-items:center;font-size:1rem;font-weight:300;color:var(--cream);margin-bottom:0.75rem;}' +
-    '.label-text{display:flex;align-items:center;gap:0.5rem;}' +
-    '.label-count{font-family:\'Cormorant Garamond\',serif;font-size:1.3rem;font-weight:400;color:var(--gold);}' +
-    '.progress-bar-bg{background:rgba(0,0,0,0.2);border-radius:999px;height:24px;overflow:hidden;position:relative;}' +
-    '.progress-bar-fill{height:100%;border-radius:999px;position:relative;}' +
-    '.fill-confirmados{background:linear-gradient(90deg,#5a9d66,#7fb685);}' +
-    '.fill-pendientes{background:linear-gradient(90deg,var(--gold-dark),var(--gold));}' +
-    '.progress-percentage{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:0.75rem;font-weight:500;color:rgba(255,255,255,0.9);}' +
-    '.detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem;margin-bottom:3rem;}' +
-    '.detail-card{background:rgba(255,255,255,0.06);border:1px solid rgba(201,169,110,0.2);border-radius:24px;padding:2rem;}' +
-    '.detail-card h2{font-family:\'Cormorant Garamond\',serif;font-style:italic;font-size:1.6rem;font-weight:400;color:var(--cream);margin-bottom:1.5rem;text-align:center;}' +
-    '.detail-list{list-style:none;}' +
-    '.detail-list li{display:flex;justify-content:space-between;align-items:center;padding:1rem 0;border-bottom:1px solid rgba(201,169,110,0.15);font-size:1rem;font-weight:300;color:var(--cream);}' +
-    '.detail-list li:last-child{border-bottom:none;}' +
-    '.item-label{display:flex;align-items:center;gap:0.75rem;}' +
-    '.item-icon{font-size:1.4rem;}' +
-    '.count{font-family:\'Cormorant Garamond\',serif;font-weight:400;color:var(--gold);font-size:1.5rem;min-width:40px;text-align:right;}' +
-    'footer{text-align:center;padding:3rem 0 2rem;}' +
-    'footer p{font-size:0.85rem;font-weight:200;color:var(--sage);letter-spacing:0.1em;}' +
-    '@media(max-width:768px){.hero-stats{grid-template-columns:1fr;}.detail-grid{grid-template-columns:1fr;}}' +
-    '</style></head><body>' +
-    '<div class="container">' +
-    '<header>' +
-    '<p class="eyebrow">Dashboard de Confirmaciones</p>' +
-    '<h1>' + novia + ' <span class="amp">&amp;</span> ' + novio + '</h1>' +
-    '<p class="subtitle">Métricas en tiempo real · ' + subtitulo + '</p>' +
-    '<div class="gold-rule"></div>' +
-    '<button class="btn-refresh" onclick="location.reload()">🔄 Actualizar</button>' +
-    '</header>' +
-
-    '<section class="hero-stats">' +
-    '<div class="stat-card"><span class="stat-icon">👥</span><div class="stat-number">' + m.totalInvitados + '</div><div class="stat-label">Total Invitados</div></div>' +
-    '<div class="stat-card stat-card--confirmed"><span class="stat-icon">✅</span><div class="stat-number">' + m.totalConfirmados + '</div><div class="stat-label">Confirmados</div></div>' +
-    '<div class="stat-card stat-card--pending"><span class="stat-icon">⏳</span><div class="stat-number">' + m.totalPendientes + '</div><div class="stat-label">Pendientes</div></div>' +
-    '</section>' +
-
-    '<section class="progress-section">' +
-    '<h2>Progreso de Confirmaciones</h2>' +
-    '<div class="progress-row"><div class="progress-row-label"><span class="label-text"><span>✅</span><span>Confirmados</span></span><span class="label-count">' + m.totalConfirmados + ' / ' + m.totalInvitados + '</span></div>' +
-    '<div class="progress-bar-bg"><div class="progress-bar-fill fill-confirmados" style="width:' + m.porcentajeConfirmados + '%"><span class="progress-percentage">' + m.porcentajeConfirmados + '%</span></div></div></div>' +
-    '<div class="progress-row"><div class="progress-row-label"><span class="label-text"><span>⏳</span><span>Pendientes</span></span><span class="label-count">' + m.totalPendientes + ' / ' + m.totalInvitados + '</span></div>' +
-    '<div class="progress-bar-bg"><div class="progress-bar-fill fill-pendientes" style="width:' + m.porcentajePendientes + '%"><span class="progress-percentage">' + m.porcentajePendientes + '%</span></div></div></div>' +
-    '</section>' +
-
-    '<div class="detail-grid">' +
-    '<section class="detail-card"><h2>¿Con qué brindamos?</h2><ul class="detail-list">' +
-    row('🍷','Vino', m.porBebida['Vino']) +
-    row('🥃','Whisky', m.porBebida['Whisky']) +
-    row('🌵','Tequila', m.porBebida['Tequila']) +
-    row('🥤','Sin alcohol', m.porBebida['Sin alcohol']) +
-    '</ul></section>' +
-    '<section class="detail-card"><h2>Restricciones Alimentarias</h2><ul class="detail-list">' +
-    row('✅','Ninguna', m.porRestriccion['Ninguna']) +
-    row('🥗','Vegetariano', m.porRestriccion['Vegetariano']) +
-    row('🌱','Vegano', m.porRestriccion['Vegano']) +
-    row('🌾','Sin gluten', m.porRestriccion['Sin gluten']) +
-    row('🥛','Sin lactosa', m.porRestriccion['Sin lactosa']) +
-    row('⚠️','Otro', m.porRestriccion['Otro']) +
-    '</ul></section>' +
-    '</div>' +
-
-    '<footer><p>Dashboard actualizado en tiempo real</p></footer>' +
-    '</div></body></html>';
-}
-
-/**
- * 🔍 DIAGNÓSTICO: Muestra exactamente qué hay en la línea 633 del Index.html en GAS
- * y busca cualquier referencia a "metricas".
- * Ejecutar desde el editor de GAS.
- */
-function diagnosticarIndexHtml() {
-  try {
-    var contenido = HtmlService.createHtmlOutputFromFile('Index').getContent();
-    var lineas = contenido.split('\n');
-    Logger.log('📄 Index.html en GAS: ' + lineas.length + ' líneas');
-    Logger.log('📍 Línea 633: ' + (lineas[632] || '(vacía)'));
-    Logger.log('');
-    var encontrado = false;
-    for (var j = 0; j < lineas.length; j++) {
-      if (lineas[j].indexOf('metricas') !== -1) {
-        Logger.log('⚠️ "metricas" en L' + (j+1) + ': ' + lineas[j].trim());
-        encontrado = true;
-      }
-    }
-    if (!encontrado) Logger.log('✅ Sin "metricas" — archivo correcto');
-    else Logger.log('\n❌ El Index.html en GAS está desactualizado. Reemplázalo manualmente.');
-  } catch(e) {
-    Logger.log('❌ ' + e.toString());
-  }
-}
-
-/**
- * Genera el HTML de la página de agradecimiento directamente en el backend.
- * Evita ReferenceError en templates de GAS.
- * @param {string} nombre - Nombre del invitado
- * @param {string} id - ID del invitado
- * @param {string} modo - 'confirmacion' o 'postboda'
- * @param {Object} c - Objeto de configuración
- */
-function buildAgradecimientoHtml_(nombre, id, modo, c) {
-  c = c || {};
-  var novia    = c.nombre_novia  || 'Jennifer';
-  var novio    = c.nombre_novio  || 'Nicolás';
-  var fecha    = c.hero_fecha_texto || c.app_subtitulo || '15 de agosto de 2026';
-  var venue    = c.venue_nombre  || 'Hacienda Angelus Campestre';
-  var ciudad   = c.venue_ciudad  || 'Bogotá';
-  var forest   = c.color_forest  || '#1a2e22';
-  var gold     = c.color_gold    || '#c9a96e';
-  var goldDark = c.color_gold_dark || '#a07840';
-  var cream    = c.color_cream   || '#f7f0e6';
-  var sage     = c.color_sage    || '#7a9e7e';
-  var driveFolderId = c.drive_folder_id || '';
-  var webappUrl = c.webapp_url || '';
-
-  var esPostBoda = (modo === 'postboda');
-
-  var titulo    = esPostBoda ? '¡Gracias por acompañarnos!' : '¡Tu presencia está confirmada!';
-  var subtitulo = esPostBoda
-    ? 'Fue un honor celebrar este día especial contigo, ' + nombre + '.'
-    : 'Hola ' + nombre + ', ¡nos alegra mucho que vengas! Te esperamos el ' + fecha + ' en ' + venue + ', ' + ciudad + '.';
-  var icono     = esPostBoda ? '🎊' : '💍';
-
-  var btnFotos = '';
-  if (esPostBoda && driveFolderId && driveFolderId.length > 10) {
-    btnFotos = '<a href="https://drive.google.com/drive/folders/' + driveFolderId + '?usp=sharing" target="_blank" rel="noopener" class="btn" style="margin-top:1rem;">📸 Ver fotos del matrimonio</a>';
-  }
-
-  var btnCancelar = '';
-  if (!esPostBoda && webappUrl) {
-    btnCancelar = '<button onclick="cancelarConfirmacion()" class="btn btn-outline" style="margin-top:0.75rem;background:transparent;border:1px solid rgba(201,169,110,0.4);color:var(--gold);">Cambié de opinión</button>';
-  }
-
-  var scriptCancelar = !esPostBoda ? '<scr' + 'ipt>' +
-    'function cancelarConfirmacion(){' +
-    'if(!confirm("¿Seguro que deseas cancelar tu confirmación?"))return;' +
-    'google.script.run.withSuccessHandler(function(){location.reload();})' +
-    '.withFailureHandler(function(e){alert("Error: "+e.message);})' +
-    '.cancelarConfirmacion({id:"' + id + '"});' +
-    '}' +
-    '<' + '/script>' : '';
-
-  return '<!DOCTYPE html><html lang="es"><head>' +
-    '<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>' +
-    '<title>' + titulo + ' — ' + novia + ' &amp; ' + novio + '</title>' +
-    '<link rel="icon" href="data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><text y=\'0.9em\' font-size=\'90\'>💍</text></svg>">' +
-    '<link rel="preconnect" href="https://fonts.googleapis.com">' +
-    '<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@200;300;400&display=swap" rel="stylesheet">' +
-    '<style>' +
-    ':root{--forest:' + forest + ';--gold:' + gold + ';--gold-dark:' + goldDark + ';--cream:' + cream + ';--sage:' + sage + ';}' +
-    '*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}' +
-    'body{font-family:\'Jost\',sans-serif;font-weight:300;background:linear-gradient(135deg,var(--forest) 0%,#243d2e 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem 1.5rem;}' +
-    '.card{background:var(--cream);border-radius:24px;padding:3rem 2.5rem;max-width:480px;width:100%;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,0.35);animation:cardIn 0.9s cubic-bezier(0.25,1,0.5,1) both;}' +
-    '@keyframes cardIn{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:translateY(0)}}' +
-    '.icon{font-size:3.5rem;margin-bottom:1rem;display:block;}' +
-    '.gold-line{width:80px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:1.2rem auto;}' +
-    '.names{font-family:\'Cormorant Garamond\',serif;font-style:italic;font-size:clamp(1.8rem,5vw,2.5rem);color:var(--forest);line-height:1.1;}' +
-    '.names .amp{color:var(--gold);}' +
-    '.titulo{font-family:\'Cormorant Garamond\',serif;font-style:italic;font-size:clamp(1.3rem,4vw,1.7rem);color:var(--forest);margin:1.2rem 0 0.6rem;}' +
-    '.sub{font-family:\'Cormorant Garamond\',serif;font-style:italic;font-size:1.05rem;color:#4a4a4a;line-height:1.8;margin-bottom:0.5rem;}' +
-    '.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0.8rem 2rem;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:var(--forest);border:none;border-radius:50px;font-family:\'Jost\',sans-serif;font-size:0.82rem;font-weight:400;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;text-decoration:none;box-shadow:0 4px 20px rgba(201,169,110,0.4);transition:transform 0.3s ease,box-shadow 0.3s ease;}' +
-    '.btn:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 8px 28px rgba(201,169,110,0.55);}' +
-    '.btns{display:flex;flex-direction:column;align-items:center;gap:0.75rem;margin-top:1.5rem;}' +
-    '</style></head><body>' +
-    '<div class="card">' +
-    '<span class="icon">' + icono + '</span>' +
-    '<p class="names">' + novia + ' <span class="amp">&amp;</span> ' + novio + '</p>' +
-    '<div class="gold-line"></div>' +
-    '<h1 class="titulo">' + titulo + '</h1>' +
-    '<p class="sub">' + subtitulo + '</p>' +
-    '<div class="btns">' + btnFotos + btnCancelar + '</div>' +
-    '</div>' +
-    scriptCancelar +
-    '</body></html>';
 }

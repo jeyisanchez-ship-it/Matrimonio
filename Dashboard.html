@@ -15,27 +15,27 @@
   ?>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Dashboard — <?= _config.nombre_novia || 'Jennifer' ?> & <?= _config.nombre_novio || 'Nicolás' ?></title>
+  <title>Dashboard — <?= nombre_novia || 'Jennifer' ?> &amp; <?= nombre_novio || 'Nicolás' ?></title>
   
   <!-- Favicon -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>💍</text></svg>">
-  <link rel="apple-touch-icon" href="<?= _config.favicon_url || 'https://images.unsplash.com/photo-1519741497674-611481863552?w=180' ?>">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E💍%3C/text%3E%3C/svg%3E">
+  <link rel="apple-touch-icon" href="<?= favicon_url || 'https://images.unsplash.com/photo-1519741497674-611481863552?w=180' ?>">
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --forest:      <?= _config.color_forest || '#1a2e22' ?>;
-      --forest-mid:  <?= _config.color_forest_mid || '#243d2e' ?>;
-      --sage:        <?= _config.color_sage || '#7a9e7e' ?>;
-      --cream:       <?= _config.color_cream || '#f7f0e6' ?>;
-      --cream-deep:  <?= _config.color_cream_deep || '#ede3d5' ?>;
-      --off-white:   <?= _config.color_off_white || '#faf6f0' ?>;
-      --gold:        <?= _config.color_gold || '#c9a96e' ?>;
-      --gold-lite:   <?= _config.color_gold_lite || '#e0c898' ?>;
-      --gold-dark:   <?= _config.color_gold_dark || '#a07840' ?>;
-      --rose:        <?= _config.color_rose || '#d4a5a5' ?>;
+      --forest:      <?= color_forest || '#1a2e22' ?>;
+      --forest-mid:  <?= color_forest_mid || '#243d2e' ?>;
+      --sage:        <?= color_sage || '#7a9e7e' ?>;
+      --cream:       <?= color_cream || '#f7f0e6' ?>;
+      --cream-deep:  <?= color_cream_deep || '#ede3d5' ?>;
+      --off-white:   <?= color_off_white || '#faf6f0' ?>;
+      --gold:        <?= color_gold || '#c9a96e' ?>;
+      --gold-lite:   <?= color_gold_lite || '#e0c898' ?>;
+      --gold-dark:   <?= color_gold_dark || '#a07840' ?>;
+      --rose:        <?= color_rose || '#d4a5a5' ?>;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -623,8 +623,8 @@
     ═══════════════════════════════════════════ -->
     <header>
       <p class="header-eyebrow">Dashboard de Confirmaciones</p>
-      <h1><?= _config.nombre_novia || 'Jennifer' ?> <span class="ampersand">&amp;</span> <?= _config.nombre_novio || 'Nicolás' ?></h1>
-      <p class="header-subtitle">Métricas en tiempo real · <?= _config.app_subtitulo || '15 de agosto de 2026' ?></p>
+      <h1><?= nombre_novia || 'Jennifer' ?> <span class="ampersand">&amp;</span> <?= nombre_novio || 'Nicolás' ?></h1>
+      <p class="header-subtitle">Métricas en tiempo real · <?= app_subtitulo || '15 de agosto de 2026' ?></p>
       <div class="gold-rule"></div>
       <button class="btn-refresh" onclick="location.reload()">
         <span>🔄</span>

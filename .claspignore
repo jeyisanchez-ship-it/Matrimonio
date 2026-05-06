@@ -1,0 +1,9 @@
+# Ignorar archivos de tests
+tests/**
+node_modules/**
+package.json
+package-lock.json
+.git/**
+.gitignore
+README.md
+*.md
