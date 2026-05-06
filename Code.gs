@@ -1337,15 +1337,9 @@ function doGet_(params, ss, now) {
 
   // 3.4 DESPUÉS DE LA BODA: Mostrar carta de agradecimiento post-boda
   if (despuesDeLaBoda) {
-    var templateData = {
-      nombre: fila[1],
-      id: String(id),
-      modo: 'postboda'
-    };
-    var template = HtmlService.createTemplateFromFile('Agradecimiento');
-    template.templateData = JSON.stringify(templateData);
-    template.config = config;  // ← hace que <?= config.* ?> funcione en el template
-    return template.evaluate().setTitle('Gracias por Acompañarnos — ' + config.nombre_novia + ' & ' + config.nombre_novio);
+    var html = buildAgradecimientoHtml_(fila[1], String(id), 'postboda', config);
+    return HtmlService.createHtmlOutput(html)
+      .setTitle('Gracias por Acompañarnos — ' + (config.nombre_novia || 'Jennifer') + ' & ' + (config.nombre_novio || 'Nicolás'));
   }
 
   // 3.5 ANTES DE LA BODA: Verificación de fecha límite RSVP
@@ -1355,15 +1349,9 @@ function doGet_(params, ss, now) {
 
   // 3.6 Si ya confirmó, mostrar carta de agradecimiento por confirmar
   if (fila[3] === 'Confirmado') {
-    var templateData = {
-      nombre: fila[1],
-      id: String(id),
-      modo: 'confirmacion'
-    };
-    var template = HtmlService.createTemplateFromFile('Agradecimiento');
-    template.templateData = JSON.stringify(templateData);
-    template.config = config;  // ← hace que <?= config.* ?> funcione en el template
-    return template.evaluate().setTitle('¡Gracias por Confirmar! — ' + config.nombre_novia + ' & ' + config.nombre_novio);
+    var html = buildAgradecimientoHtml_(fila[1], String(id), 'confirmacion', config);
+    return HtmlService.createHtmlOutput(html)
+      .setTitle('¡Gracias por Confirmar! — ' + (config.nombre_novia || 'Jennifer') + ' & ' + (config.nombre_novio || 'Nicolás'));
   }
 
   // 3.7 Mostrar formulario RSVP (fila[3] === 'Pendiente' o vacío)
@@ -2386,33 +2374,111 @@ function buildDashboardHtml_(m, c) {
 }
 
 /**
- * 🔍 DIAGNÓSTICO: Muestra las líneas 625-640 del Index.html en GAS sin evaluarlo
+ * 🔍 DIAGNÓSTICO: Muestra exactamente qué hay en la línea 633 del Index.html en GAS
+ * y busca cualquier referencia a "metricas".
+ * Ejecutar desde el editor de GAS.
  */
 function diagnosticarIndexHtml() {
   try {
-    // getResource() lee el archivo sin evaluar los scriptlets
     var contenido = HtmlService.createHtmlOutputFromFile('Index').getContent();
     var lineas = contenido.split('\n');
-    Logger.log('📄 Index.html tiene ' + lineas.length + ' líneas en GAS');
+    Logger.log('📄 Index.html en GAS: ' + lineas.length + ' líneas');
+    Logger.log('📍 Línea 633: ' + (lineas[632] || '(vacía)'));
     Logger.log('');
-    Logger.log('📍 Líneas 628-638:');
-    for (var i = 627; i < Math.min(638, lineas.length); i++) {
-      Logger.log('L' + (i+1) + ': ' + lineas[i]);
-    }
-    Logger.log('');
-    Logger.log('🔎 Buscando "metricas" en Index.html...');
     var encontrado = false;
     for (var j = 0; j < lineas.length; j++) {
       if (lineas[j].indexOf('metricas') !== -1) {
-        Logger.log('⚠️ ENCONTRADO en línea ' + (j+1) + ': ' + lineas[j].trim());
+        Logger.log('⚠️ "metricas" en L' + (j+1) + ': ' + lineas[j].trim());
         encontrado = true;
       }
     }
-    if (!encontrado) {
-      Logger.log('✅ No se encontró "metricas" — archivo correcto');
-    }
+    if (!encontrado) Logger.log('✅ Sin "metricas" — archivo correcto');
+    else Logger.log('\n❌ El Index.html en GAS está desactualizado. Reemplázalo manualmente.');
   } catch(e) {
-    Logger.log('❌ Error: ' + e.toString());
-    Logger.log('👉 Abre Index.html en GAS y ve manualmente a la línea 633');
+    Logger.log('❌ ' + e.toString());
   }
+}
+
+/**
+ * Genera el HTML de la página de agradecimiento directamente en el backend.
+ * Evita ReferenceError en templates de GAS.
+ * @param {string} nombre - Nombre del invitado
+ * @param {string} id - ID del invitado
+ * @param {string} modo - 'confirmacion' o 'postboda'
+ * @param {Object} c - Objeto de configuración
+ */
+function buildAgradecimientoHtml_(nombre, id, modo, c) {
+  c = c || {};
+  var novia    = c.nombre_novia  || 'Jennifer';
+  var novio    = c.nombre_novio  || 'Nicolás';
+  var fecha    = c.hero_fecha_texto || c.app_subtitulo || '15 de agosto de 2026';
+  var venue    = c.venue_nombre  || 'Hacienda Angelus Campestre';
+  var ciudad   = c.venue_ciudad  || 'Bogotá';
+  var forest   = c.color_forest  || '#1a2e22';
+  var gold     = c.color_gold    || '#c9a96e';
+  var goldDark = c.color_gold_dark || '#a07840';
+  var cream    = c.color_cream   || '#f7f0e6';
+  var sage     = c.color_sage    || '#7a9e7e';
+  var driveFolderId = c.drive_folder_id || '';
+  var webappUrl = c.webapp_url || '';
+
+  var esPostBoda = (modo === 'postboda');
+
+  var titulo    = esPostBoda ? '¡Gracias por acompañarnos!' : '¡Tu presencia está confirmada!';
+  var subtitulo = esPostBoda
+    ? 'Fue un honor celebrar este día especial contigo, ' + nombre + '.'
+    : 'Hola ' + nombre + ', ¡nos alegra mucho que vengas! Te esperamos el ' + fecha + ' en ' + venue + ', ' + ciudad + '.';
+  var icono     = esPostBoda ? '🎊' : '💍';
+
+  var btnFotos = '';
+  if (esPostBoda && driveFolderId && driveFolderId.length > 10) {
+    btnFotos = '<a href="https://drive.google.com/drive/folders/' + driveFolderId + '?usp=sharing" target="_blank" rel="noopener" class="btn" style="margin-top:1rem;">📸 Ver fotos del matrimonio</a>';
+  }
+
+  var btnCancelar = '';
+  if (!esPostBoda && webappUrl) {
+    btnCancelar = '<button onclick="cancelarConfirmacion()" class="btn btn-outline" style="margin-top:0.75rem;background:transparent;border:1px solid rgba(201,169,110,0.4);color:var(--gold);">Cambié de opinión</button>';
+  }
+
+  var scriptCancelar = !esPostBoda ? '<script>' +
+    'function cancelarConfirmacion(){' +
+    'if(!confirm("¿Seguro que deseas cancelar tu confirmación?"))return;' +
+    'google.script.run.withSuccessHandler(function(){location.reload();})' +
+    '.withFailureHandler(function(e){alert("Error: "+e.message);})' +
+    '.cancelarConfirmacion({id:"' + id + '"});' +
+    '}' +
+    '<\/script>' : '';
+
+  return '<!DOCTYPE html><html lang="es"><head>' +
+    '<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>' +
+    '<title>' + titulo + ' — ' + novia + ' &amp; ' + novio + '</title>' +
+    '<link rel="icon" href="data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><text y=\'0.9em\' font-size=\'90\'>💍</text></svg>">' +
+    '<link rel="preconnect" href="https://fonts.googleapis.com">' +
+    '<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@200;300;400&display=swap" rel="stylesheet">' +
+    '<style>' +
+    ':root{--forest:' + forest + ';--gold:' + gold + ';--gold-dark:' + goldDark + ';--cream:' + cream + ';--sage:' + sage + ';}' +
+    '*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}' +
+    'body{font-family:\'Jost\',sans-serif;font-weight:300;background:linear-gradient(135deg,var(--forest) 0%,#243d2e 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem 1.5rem;}' +
+    '.card{background:var(--cream);border-radius:24px;padding:3rem 2.5rem;max-width:480px;width:100%;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,0.35);animation:cardIn 0.9s cubic-bezier(0.25,1,0.5,1) both;}' +
+    '@keyframes cardIn{from{opacity:0;transform:translateY(32px)}to{opacity:1;transform:translateY(0)}}' +
+    '.icon{font-size:3.5rem;margin-bottom:1rem;display:block;}' +
+    '.gold-line{width:80px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:1.2rem auto;}' +
+    '.names{font-family:\'Cormorant Garamond\',serif;font-style:italic;font-size:clamp(1.8rem,5vw,2.5rem);color:var(--forest);line-height:1.1;}' +
+    '.names .amp{color:var(--gold);}' +
+    '.titulo{font-family:\'Cormorant Garamond\',serif;font-style:italic;font-size:clamp(1.3rem,4vw,1.7rem);color:var(--forest);margin:1.2rem 0 0.6rem;}' +
+    '.sub{font-family:\'Cormorant Garamond\',serif;font-style:italic;font-size:1.05rem;color:#4a4a4a;line-height:1.8;margin-bottom:0.5rem;}' +
+    '.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0.8rem 2rem;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:var(--forest);border:none;border-radius:50px;font-family:\'Jost\',sans-serif;font-size:0.82rem;font-weight:400;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;text-decoration:none;box-shadow:0 4px 20px rgba(201,169,110,0.4);transition:transform 0.3s ease,box-shadow 0.3s ease;}' +
+    '.btn:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 8px 28px rgba(201,169,110,0.55);}' +
+    '.btns{display:flex;flex-direction:column;align-items:center;gap:0.75rem;margin-top:1.5rem;}' +
+    '</style></head><body>' +
+    '<div class="card">' +
+    '<span class="icon">' + icono + '</span>' +
+    '<p class="names">' + novia + ' <span class="amp">&amp;</span> ' + novio + '</p>' +
+    '<div class="gold-line"></div>' +
+    '<h1 class="titulo">' + titulo + '</h1>' +
+    '<p class="sub">' + subtitulo + '</p>' +
+    '<div class="btns">' + btnFotos + btnCancelar + '</div>' +
+    '</div>' +
+    scriptCancelar +
+    '</body></html>';
 }
