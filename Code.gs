@@ -2440,14 +2440,14 @@ function buildAgradecimientoHtml_(nombre, id, modo, c) {
     btnCancelar = '<button onclick="cancelarConfirmacion()" class="btn btn-outline" style="margin-top:0.75rem;background:transparent;border:1px solid rgba(201,169,110,0.4);color:var(--gold);">Cambié de opinión</button>';
   }
 
-  var scriptCancelar = !esPostBoda ? '<script>' +
+  var scriptCancelar = !esPostBoda ? '<scr' + 'ipt>' +
     'function cancelarConfirmacion(){' +
     'if(!confirm("¿Seguro que deseas cancelar tu confirmación?"))return;' +
     'google.script.run.withSuccessHandler(function(){location.reload();})' +
     '.withFailureHandler(function(e){alert("Error: "+e.message);})' +
     '.cancelarConfirmacion({id:"' + id + '"});' +
     '}' +
-    '<\/script>' : '';
+    '<' + '/script>' : '';
 
   return '<!DOCTYPE html><html lang="es"><head>' +
     '<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>' +
