@@ -1,0 +1,12 @@
+{
+  "name": "wedding-invitation-app-tests",
+  "version": "1.0.0",
+  "description": "Entorno de tests para la Wedding Invitation App (GAS)",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "29.7.0",
+    "fast-check": "3.19.0"
+  }
+}

@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <!-- GAS templateData injection -->
+  <script>var templateData = <?!= templateData ?>;</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gracias por Acompañarnos — <?= config.nombre_novia || 'Jennifer' ?> & <?= config.nombre_novio || 'Nicolás' ?></title>
+  
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>💍</text></svg>">
+  <link rel="apple-touch-icon" href="<?= config.favicon_url || 'https://images.unsplash.com/photo-1519741497674-611481863552?w=180' ?>">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@200;300;400&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --forest:      <?= config.color_forest || '#1a2e22' ?>;
+      --forest-mid:  <?= config.color_forest_mid || '#243d2e' ?>;
+      --cream:       <?= config.color_cream || '#f7f0e6' ?>;
+      --off-white:   <?= config.color_off_white || '#faf6f0' ?>;
+      --gold:        <?= config.color_gold || '#c9a96e' ?>;
+      --gold-lite:   <?= config.color_gold_lite || '#e0c898' ?>;
+      --gold-dark:   <?= config.color_gold_dark || '#a07840' ?>;
+      --sage:        <?= config.color_sage || '#7a9e7e' ?>;
+      --text-dark:   <?= config.color_text_dark || '#1a1a1a' ?>;
+      --text-mid:    <?= config.color_text_mid || '#4a4a4a' ?>;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    html { scroll-behavior: smooth; }
+    
+    body {
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      background: linear-gradient(135deg, var(--forest) 0%, var(--forest-mid) 100%);
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Paper texture overlay */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Floating botanical elements */
+    .floral-bg {
+      position: fixed;
+      pointer-events: none;
+      opacity: 0.08;
+      z-index: 0;
+      animation: floralFloat 20s ease-in-out infinite;
+    }
+    .floral-bg.left { top: 10%; left: -5%; }
+    .floral-bg.right { bottom: 10%; right: -5%; transform: scaleX(-1); }
+    
+    @keyframes floralFloat {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(5deg); }
+    }
+
+    /* Main card */
+    .carta-container {
+      position: relative;
+      z-index: 1;
+      background: var(--off-white);
+      border-radius: 24px;
+      padding: 3.5rem 3rem;
+      max-width: 700px;
+      width: 100%;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.4), 0 0 0 1px rgba(201,169,110,0.2);
+      animation: cardFadeIn 1s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    @keyframes cardFadeIn {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Header with wax seal */
+    .carta-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      position: relative;
+    }
+
+    .wax-seal {
+      width: 90px;
+      height: 90px;
+      margin: 0 auto 1.5rem;
+      animation: sealRotate 1.2s cubic-bezier(0.25, 1, 0.5, 1) 0.3s both;
+    }
+
+    @keyframes sealRotate {
+      0% { opacity: 0; transform: scale(0.5) rotate(-30deg); }
+      60% { transform: scale(1.1) rotate(5deg); }
+      100% { opacity: 1; transform: scale(1) rotate(0deg); }
+    }
+
+    .carta-nombres {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(2rem, 5vw, 2.8rem);
+      color: var(--forest);
+      line-height: 1.2;
+      letter-spacing: 0.02em;
+      margin-bottom: 0.5rem;
+    }
+
+    .carta-nombres .amp {
+      color: var(--gold);
+      font-size: 1.1em;
+    }
+
+    .gold-line {
+      width: 80px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 1rem auto;
+    }
+
+    /* Saludo personalizado */
+    .carta-saludo {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(1.3rem, 3vw, 1.6rem);
+      color: var(--forest);
+      text-align: center;
+      margin-bottom: 2rem;
+      font-weight: 400;
+    }
+
+    /* Mensaje principal */
+    .carta-mensaje {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(1.05rem, 2.5vw, 1.2rem);
+      color: var(--text-mid);
+      line-height: 2;
+      text-align: justify;
+      margin-bottom: 2rem;
+      font-style: italic;
+    }
+
+    .carta-mensaje p {
+      margin-bottom: 1.5rem;
+    }
+
+    .carta-mensaje p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Firma */
+    .carta-firma {
+      text-align: center;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(201,169,110,0.3);
+    }
+
+    .carta-firma-texto {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-style: italic;
+      font-size: 0.95rem;
+      color: var(--sage);
+      margin-bottom: 0.75rem;
+    }
+
+    .carta-firma-nombres {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.5rem;
+      color: var(--gold);
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    /* Botón de acción */
+    .carta-acciones {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 2.5rem;
+      align-items: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      min-height: 48px;
+      padding: 0.9rem 2.5rem;
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      color: var(--forest);
+      border: none;
+      border-radius: 50px;
+      font-family: 'Jost', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      box-shadow: 0 4px 20px rgba(201,169,110,0.4);
+    }
+
+    .btn:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 8px 28px rgba(201,169,110,0.6);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 2px solid var(--gold);
+      color: var(--gold);
+      box-shadow: none;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(201,169,110,0.1);
+      box-shadow: 0 4px 16px rgba(201,169,110,0.2);
+    }
+
+    /* Decorative elements */
+    .floral-divider {
+      text-align: center;
+      margin: 2rem 0;
+      opacity: 0.6;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .carta-container {
+        padding: 2.5rem 1.8rem;
+      }
+      
+      .carta-mensaje {
+        text-align: left;
+      }
+
+      .floral-bg {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Floating botanical decorations -->
+  <svg class="floral-bg left" width="300" height="400" viewBox="0 0 300 400" fill="none">
+    <path d="M50 0 Q100 100 50 200 Q0 300 50 400" stroke="#c9a96e" stroke-width="2" fill="none"/>
+    <circle cx="50" cy="100" r="20" fill="#7a9e7e" opacity="0.6"/>
+    <circle cx="50" cy="200" r="25" fill="#d4a5a5" opacity="0.6"/>
+    <circle cx="50" cy="300" r="18" fill="#c9a96e" opacity="0.6"/>
+  </svg>
+  
+  <svg class="floral-bg right" width="300" height="400" viewBox="0 0 300 400" fill="none">
+    <path d="M50 0 Q100 100 50 200 Q0 300 50 400" stroke="#c9a96e" stroke-width="2" fill="none"/>
+    <circle cx="50" cy="100" r="20" fill="#7a9e7e" opacity="0.6"/>
+    <circle cx="50" cy="200" r="25" fill="#d4a5a5" opacity="0.6"/>
+    <circle cx="50" cy="300" r="18" fill="#c9a96e" opacity="0.6"/>
+  </svg>
+
+  <div class="carta-container">
+    <!-- Header with wax seal -->
+    <div class="carta-header">
+      <svg class="wax-seal" viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="45" cy="45" r="40" fill="#c9a96e" opacity="0.15"/>
+        <circle cx="45" cy="45" r="34" fill="#c9a96e" opacity="0.25"/>
+        <circle cx="45" cy="45" r="28" fill="#c9a96e"/>
+        <text x="45" y="52" text-anchor="middle" font-family="Georgia,serif" font-size="18" font-style="italic" fill="#1a2e22" font-weight="400">J&N</text>
+        <circle cx="45" cy="45" r="38" stroke="#a07840" stroke-width="1" fill="none" stroke-dasharray="4 3"/>
+      </svg>
+
+      <p class="carta-nombres">Jennifer <span class="amp">&amp;</span> Nicolás</p>
+      <div class="gold-line"></div>
+    </div>
+
+    <!-- Saludo personalizado -->
+    <h1 class="carta-saludo" id="saludo-nombre">Querido/a [Nombre]</h1>
+
+    <!-- Mensaje de agradecimiento (cambia según el modo) -->
+    <div class="carta-mensaje" id="carta-mensaje">
+      <!-- El contenido se inyecta dinámicamente según el modo -->
+    </div>
+
+    <!-- Floral divider -->
+    <div class="floral-divider">
+      <svg width="200" height="30" viewBox="0 0 200 30" fill="none">
+        <line x1="0" y1="15" x2="70" y2="15" stroke="rgba(201,169,110,0.4)" stroke-width="1"/>
+        <circle cx="100" cy="15" r="8" fill="#c9a96e" opacity="0.6"/>
+        <circle cx="100" cy="15" r="4" fill="#7a9e7e" opacity="0.8"/>
+        <line x1="130" y1="15" x2="200" y2="15" stroke="rgba(201,169,110,0.4)" stroke-width="1"/>
+      </svg>
+    </div>
+
+    <!-- Firma -->
+    <div class="carta-firma">
+      <p class="carta-firma-texto">Con amor,</p>
+      <p class="carta-firma-nombres">Jennifer & Nicolás</p>
+    </div>
+
+    <!-- Acciones -->
+    <div class="carta-acciones">
+      <a href="#" 
+         target="_blank" 
+         rel="noopener noreferrer" 
+         class="btn"
+         id="btn-fotos"
+         style="display:none;">
+        📸 Ver Galería de Fotos
+      </a>
+      
+      <a href="https://wa.me/573213837837?text=Hola, tengo una pregunta sobre la boda" 
+         target="_blank" 
+         rel="noopener noreferrer" 
+         class="btn btn-secondary">
+        💬 Enviar Mensaje
+      </a>
+
+      <button onclick="cambiarOpinion()" 
+              class="btn btn-secondary" 
+              id="btn-cambiar-confirmacion"
+              style="margin-top:1rem;border-color:#d4a5a5;color:#d4a5a5;">
+        🔄 Cambiar mi Confirmación
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Inyectar nombre personalizado y contenido según modo
+    (function() {
+      var modo = 'confirmacion'; // Default
+      var nombre = '';
+      var invitadoId = '';
+      var config = {};
+      
+      if (typeof templateData !== 'undefined') {
+        nombre = templateData.nombre || '';
+        invitadoId = templateData.id || '';
+        modo = templateData.modo || 'confirmacion';
+      }
+      
+      // Obtener configuración si está disponible
+      if (typeof window.config !== 'undefined') {
+        config = window.config;
+      }
+      
+      // Actualizar saludo
+      var saludoEl = document.getElementById('saludo-nombre');
+      if (saludoEl && nombre) {
+        saludoEl.textContent = 'Querido/a ' + nombre;
+      }
+      
+      // Inyectar mensaje según modo
+      var mensajeEl = document.getElementById('carta-mensaje');
+      if (mensajeEl) {
+        if (modo === 'postboda') {
+          // MODO POST-BODA: Después de la fecha de la boda
+          mensajeEl.innerHTML = 
+            '<p>' + (config.carta_postboda_p1 || 'Hoy queremos tomarnos un momento para agradecerte de corazón por haber sido parte de nuestro día especial. Tu presencia hizo que nuestra boda fuera aún más mágica de lo que habíamos soñado.') + '</p>' +
+            '<p>' + (config.carta_postboda_p2 || 'Cada sonrisa, cada abrazo y cada palabra de felicitación quedará grabado en nuestros corazones para siempre. Fue un honor compartir contigo el inicio de esta nueva aventura, rodeados del amor de quienes más queremos.') + '</p>' +
+            '<p>' + (config.carta_postboda_p3 || 'Gracias por celebrar con nosotros, por tu amistad incondicional y por los hermosos recuerdos que creamos juntos. Gracias por ser parte de nuestra familia y de nuestra historia.') + '</p>' +
+            '<p>Con todo nuestro amor y gratitud,</p>';
+        } else {
+          // MODO CONFIRMACIÓN: Después de confirmar asistencia (antes de la boda)
+          mensajeEl.innerHTML = 
+            '<p>' + (config.carta_confirmacion_p1 || '¡Gracias por confirmar tu asistencia! No sabes la alegría que nos da saber que estarás con nosotros en este día tan especial.') + '</p>' +
+            '<p>' + (config.carta_confirmacion_p2 || 'Tu presencia es uno de los regalos más valiosos que podríamos recibir. Estamos emocionados de compartir contigo el inicio de esta nueva aventura, rodeados del amor de quienes más queremos.') + '</p>' +
+            '<p>' + (config.carta_confirmacion_p3 || 'Nos vemos en nuestra boda. Prepárate para una celebración llena de amor, risas y momentos inolvidables.') + '</p>' +
+            '<p>Con todo nuestro cariño,</p>';
+        }
+      }
+      
+      // Configurar botón de fotos
+      var btnFotos = document.getElementById('btn-fotos');
+      if (btnFotos) {
+        var driveFolderId = config.drive_folder_id || '';
+        
+        // Extraer ID si es una URL completa
+        if (driveFolderId.indexOf('drive.google.com') !== -1) {
+          // Es una URL completa, extraer el ID
+          var match = driveFolderId.match(/folders\/([a-zA-Z0-9_-]+)/);
+          if (match && match[1]) {
+            driveFolderId = match[1];
+          }
+        }
+        
+        // Solo mostrar si hay un ID de carpeta válido (no es el placeholder)
+        if (driveFolderId && driveFolderId !== 'FOLDER_ID' && driveFolderId.length > 10) {
+          btnFotos.href = 'https://drive.google.com/drive/folders/' + driveFolderId + '?usp=sharing';
+          btnFotos.style.display = 'inline-flex';
+          
+          // Cambiar texto en modo post-boda
+          if (modo === 'postboda') {
+            btnFotos.innerHTML = '📸 Ver & Subir Fotos';
+          }
+        } else {
+          btnFotos.style.display = 'none';
+        }
+      }
+      
+      // Ocultar botón "Cambiar Confirmación" en modo post-boda
+      var btnCambiar = document.getElementById('btn-cambiar-confirmacion');
+      if (btnCambiar && modo === 'postboda') {
+        btnCambiar.style.display = 'none';
+      }
+    })();
+
+    // Función para cambiar de opinión
+    function cambiarOpinion() {
+      if (typeof templateData === 'undefined' || !templateData.id) {
+        alert('No se pudo identificar tu invitación. Por favor contáctanos por WhatsApp.');
+        return;
+      }
+
+      // Primero obtener los invitados vinculados
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run
+          .withSuccessHandler(function(resultado) {
+            if (resultado && resultado.success) {
+              mostrarModalCancelacion(resultado.invitados);
+            } else {
+              alert('❌ ' + (resultado.error || 'No se pudo obtener información de invitados.'));
+            }
+          })
+          .withFailureHandler(function(error) {
+            alert('❌ Error: ' + error.message);
+          })
+          .obtenerInvitadosVinculados({ id: templateData.id });
+      } else {
+        alert('❌ No se pudo conectar con el servidor. Por favor contáctanos por WhatsApp.');
+      }
+    }
+
+    // Función para mostrar modal de cancelación con lista de invitados
+    function mostrarModalCancelacion(invitados) {
+      // Crear modal personalizado
+      var modal = document.createElement('div');
+      modal.style.cssText = 'position:fixed;inset:0;background:rgba(26,46,34,0.95);display:flex;align-items:center;justify-content:center;z-index:10000;padding:1.5rem;animation:fadeIn 0.3s ease;overflow-y:auto;';
+      
+      var modalContent = document.createElement('div');
+      modalContent.style.cssText = 'background:#faf6f0;border-radius:24px;padding:2.5rem 2rem;max-width:520px;width:100%;box-shadow:0 24px 80px rgba(0,0,0,0.4);animation:slideUp 0.4s cubic-bezier(0.25,1,0.5,1);position:relative;max-height:90vh;overflow-y:auto;';
+      
+      // Construir lista de invitados con checkboxes
+      var listaInvitadosHTML = '';
+      var hayConfirmados = false;
+      
+      for (var i = 0; i < invitados.length; i++) {
+        var inv = invitados[i];
+        var esConfirmado = inv.estado === 'Confirmado';
+        if (esConfirmado) hayConfirmados = true;
+        
+        var disabled = !esConfirmado ? 'disabled' : '';
+        var opacity = !esConfirmado ? 'opacity:0.5;' : '';
+        var estadoTexto = esConfirmado ? '<span style="color:#7fb685;">✓ Confirmado</span>' : '<span style="color:#d4a5a5;">Pendiente</span>';
+        
+        listaInvitadosHTML += 
+          '<label style="display:flex;align-items:center;gap:0.75rem;padding:1rem;background:' + (esConfirmado ? '#fff' : '#f7f0e6') + ';border-radius:12px;margin-bottom:0.75rem;cursor:' + (esConfirmado ? 'pointer' : 'not-allowed') + ';border:2px solid ' + (esConfirmado ? 'rgba(201,169,110,0.3)' : 'transparent') + ';transition:all 0.3s ease;' + opacity + '" ' +
+          'onmouseover="if(!' + !esConfirmado + ') this.style.borderColor=\'#c9a96e\'" ' +
+          'onmouseout="if(!' + !esConfirmado + ') this.style.borderColor=\'rgba(201,169,110,0.3)\'">' +
+          '<input type="checkbox" value="' + inv.id + '" ' + disabled + ' ' + (esConfirmado ? 'checked' : '') + ' ' +
+          'style="width:24px;height:24px;min-width:24px;accent-color:#d4a5a5;cursor:' + (esConfirmado ? 'pointer' : 'not-allowed') + ';">' +
+          '<div style="flex:1;">' +
+          '<div style="font-weight:500;color:#1a2e22;margin-bottom:0.25rem;">' + inv.nombre + '</div>' +
+          '<div style="font-size:0.85rem;color:#7a7a7a;">ID: ' + inv.id + ' • ' + estadoTexto + '</div>' +
+          '</div>' +
+          '</label>';
+      }
+      
+      if (!hayConfirmados) {
+        modalContent.innerHTML = 
+          '<div style="text-align:center;">' +
+          '<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin:0 auto 1.5rem;">' +
+          '<circle cx="40" cy="40" r="35" fill="#d4a5a5" opacity="0.15"/>' +
+          '<circle cx="40" cy="40" r="28" fill="#d4a5a5" opacity="0.25"/>' +
+          '<path d="M40 25 L40 45 M40 52 L40 55" stroke="#d4a5a5" stroke-width="4" stroke-linecap="round"/>' +
+          '</svg>' +
+          '<h3 style="font-family:\'Playfair Display\',Georgia,serif;font-size:1.6rem;font-weight:600;color:#1a2e22;margin-bottom:0.75rem;">No hay confirmaciones activas</h3>' +
+          '<p style="font-family:\'Cormorant Garamond\',Georgia,serif;font-style:italic;font-size:1.05rem;color:#4a4a4a;line-height:1.7;margin-bottom:2rem;">Tu asistencia ya está marcada como "Pendiente".</p>' +
+          '<button onclick="cerrarModal()" style="padding:0.9rem 2rem;background:linear-gradient(135deg,#c9a96e,#a07840);border:none;color:#1a2e22;border-radius:50px;font-family:\'Jost\',sans-serif;font-size:0.85rem;font-weight:400;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;box-shadow:0 4px 20px rgba(201,169,110,0.4);">Entendido</button>' +
+          '</div>';
+      } else {
+        modalContent.innerHTML = 
+          '<div style="text-align:center;margin-bottom:1.5rem;">' +
+          '<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin:0 auto 1rem;animation:iconPulse 2s ease-in-out infinite;">' +
+          '<circle cx="40" cy="40" r="35" fill="#d4a5a5" opacity="0.15"/>' +
+          '<circle cx="40" cy="40" r="28" fill="#d4a5a5" opacity="0.25"/>' +
+          '<path d="M40 25 L40 45 M40 52 L40 55" stroke="#d4a5a5" stroke-width="4" stroke-linecap="round"/>' +
+          '</svg>' +
+          '</div>' +
+          '<h3 style="font-family:\'Playfair Display\',Georgia,serif;font-size:1.6rem;font-weight:600;color:#1a2e22;text-align:center;margin-bottom:0.75rem;line-height:1.3;">¿Cambiar confirmación?</h3>' +
+          '<p style="font-family:\'Cormorant Garamond\',Georgia,serif;font-style:italic;font-size:1.05rem;color:#4a4a4a;text-align:center;line-height:1.7;margin-bottom:1.5rem;">Selecciona qué invitados deseas cambiar a <strong style="color:#d4a5a5;">"Pendiente"</strong>:</p>' +
+          '<div id="lista-invitados" style="margin-bottom:1.5rem;">' +
+          listaInvitadosHTML +
+          '</div>' +
+          '<p style="font-size:0.85rem;color:#7a7a7a;text-align:center;margin-bottom:1.5rem;font-style:italic;">💡 Solo puedes cancelar invitados que estén confirmados</p>' +
+          '<div style="display:flex;gap:0.75rem;flex-wrap:wrap;">' +
+          '<button onclick="cerrarModal()" style="flex:1;min-width:140px;padding:0.9rem 1.5rem;background:transparent;border:2px solid #c9a96e;color:#c9a96e;border-radius:50px;font-family:\'Jost\',sans-serif;font-size:0.85rem;font-weight:400;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.3s ease;">Cancelar</button>' +
+          '<button onclick="confirmarCambioSelectivo()" style="flex:1;min-width:140px;padding:0.9rem 1.5rem;background:linear-gradient(135deg,#d4a5a5,#c9a96e);border:none;color:#1a2e22;border-radius:50px;font-family:\'Jost\',sans-serif;font-size:0.85rem;font-weight:400;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.3s ease;box-shadow:0 4px 20px rgba(212,165,165,0.4);">Confirmar cambio</button>' +
+          '</div>';
+      }
+      
+      modal.appendChild(modalContent);
+      document.body.appendChild(modal);
+      
+      // Agregar estilos de animación
+      var style = document.createElement('style');
+      style.textContent = 
+        '@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }' +
+        '@keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }' +
+        '@keyframes iconPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }';
+      document.head.appendChild(style);
+      
+      // Función para cerrar modal
+      window.cerrarModal = function() {
+        modal.style.animation = 'fadeOut 0.3s ease';
+        setTimeout(function() {
+          if (modal.parentNode) {
+            document.body.removeChild(modal);
+          }
+        }, 300);
+      };
+      
+      // Función para confirmar cambio selectivo
+      window.confirmarCambioSelectivo = function() {
+        var checkboxes = document.querySelectorAll('#lista-invitados input[type="checkbox"]:checked:not([disabled])');
+        var idsACancelar = [];
+        
+        for (var i = 0; i < checkboxes.length; i++) {
+          idsACancelar.push(checkboxes[i].value);
+        }
+        
+        if (idsACancelar.length === 0) {
+          alert('⚠️ Por favor selecciona al menos un invitado para cancelar.');
+          return;
+        }
+        
+        var btnConfirmar = event.target;
+        btnConfirmar.disabled = true;
+        btnConfirmar.textContent = 'Procesando...';
+        btnConfirmar.style.opacity = '0.6';
+
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+          google.script.run
+            .withSuccessHandler(function(resultado) {
+              if (resultado && resultado.success) {
+                // Mostrar mensaje de éxito
+                modalContent.innerHTML = 
+                  '<div style="text-align:center;">' +
+                  '<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin:0 auto 1.5rem;">' +
+                  '<circle cx="40" cy="40" r="35" fill="#7fb685" opacity="0.15"/>' +
+                  '<circle cx="40" cy="40" r="28" fill="#7fb685" opacity="0.25"/>' +
+                  '<path d="M25 40 L35 50 L55 30" stroke="#7fb685" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>' +
+                  '</svg>' +
+                  '<h3 style="font-family:\'Playfair Display\',Georgia,serif;font-size:1.6rem;font-weight:600;color:#1a2e22;margin-bottom:0.75rem;">¡Confirmación actualizada!</h3>' +
+                  '<p style="font-family:\'Cormorant Garamond\',Georgia,serif;font-style:italic;font-size:1.05rem;color:#4a4a4a;line-height:1.7;margin-bottom:1.5rem;">' + resultado.cancelados + ' invitado(s) marcado(s) como "Pendiente". Puedes volver a confirmar cuando lo desees.</p>' +
+                  '<p style="font-family:\'Jost\',sans-serif;font-size:0.85rem;color:#7a7a7a;margin-bottom:2rem;">Redirigiendo en 3 segundos...</p>' +
+                  '</div>';
+                
+                setTimeout(function() {
+                  window.location.href = window.location.href.split('?')[0] + '?id=' + templateData.id;
+                }, 3000);
+              } else {
+                alert('❌ ' + (resultado.error || 'No se pudo actualizar. Por favor contáctanos por WhatsApp.'));
+                cerrarModal();
+              }
+            })
+            .withFailureHandler(function(error) {
+              alert('❌ Error: ' + error.message);
+              cerrarModal();
+            })
+            .cancelarConfirmacionSelectiva({ idsACancelar: idsACancelar });
+        } else {
+          alert('❌ No se pudo conectar con el servidor. Por favor contáctanos por WhatsApp.');
+          cerrarModal();
+        }
+      };
+      
+      // Cerrar al hacer clic fuera del modal
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+          cerrarModal();
+        }
+      });
+      
+      // Cerrar con tecla ESC
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          cerrarModal();
+        }
+      });
+    }
+  </script>
+</body>
+</html>

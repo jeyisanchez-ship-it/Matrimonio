@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard — <?= config.nombre_novia || 'Jennifer' ?> & <?= config.nombre_novio || 'Nicolás' ?></title>
+  
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>💍</text></svg>">
+  <link rel="apple-touch-icon" href="<?= config.favicon_url || 'https://images.unsplash.com/photo-1519741497674-611481863552?w=180' ?>">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --forest:      <?= config.color_forest || '#1a2e22' ?>;
+      --forest-mid:  <?= config.color_forest_mid || '#243d2e' ?>;
+      --sage:        <?= config.color_sage || '#7a9e7e' ?>;
+      --cream:       <?= config.color_cream || '#f7f0e6' ?>;
+      --cream-deep:  <?= config.color_cream_deep || '#ede3d5' ?>;
+      --off-white:   <?= config.color_off_white || '#faf6f0' ?>;
+      --gold:        <?= config.color_gold || '#c9a96e' ?>;
+      --gold-lite:   <?= config.color_gold_lite || '#e0c898' ?>;
+      --gold-dark:   <?= config.color_gold_dark || '#a07840' ?>;
+      --rose:        <?= config.color_rose || '#d4a5a5' ?>;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Jost', sans-serif;
+      background: linear-gradient(135deg, var(--forest) 0%, var(--forest-mid) 100%);
+      color: var(--cream);
+      font-size: 16px;
+      min-height: 100vh;
+      padding: 2rem 1.5rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Paper texture overlay */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ═══════════════════════════════════════════
+       HEADER
+    ═══════════════════════════════════════════ */
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+      animation: fadeInDown 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .header-eyebrow {
+      font-family: 'Jost', sans-serif;
+      font-weight: 200;
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.75rem;
+    }
+
+    header h1 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-style: italic;
+      font-size: clamp(2.2rem, 6vw, 3.5rem);
+      font-weight: 400;
+      color: var(--cream);
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.02em;
+      text-rendering: optimizeLegibility;
+    }
+
+    header h1 .ampersand {
+      color: var(--gold);
+      font-size: 1.1em;
+    }
+
+    .header-subtitle {
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      font-size: 0.95rem;
+      color: var(--sage);
+      letter-spacing: 0.05em;
+      margin-bottom: 1.5rem;
+    }
+
+    .gold-rule {
+      width: 100px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 1.5rem auto;
+    }
+
+    .btn-refresh {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.8rem;
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+      color: var(--forest);
+      border: none;
+      border-radius: 50px;
+      font-family: 'Jost', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      min-height: 48px;
+      text-decoration: none;
+      box-shadow: 0 4px 20px rgba(201,169,110,0.4);
+      transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease;
+    }
+
+    .btn-refresh:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 8px 28px rgba(201,169,110,0.6);
+    }
+
+    /* ═══════════════════════════════════════════
+       HERO STATS — Large numbers
+    ═══════════════════════════════════════════ */
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .stat-card {
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(201,169,110,0.2);
+      border-radius: 24px;
+      padding: 2.5rem 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+      animation: fadeInUp 0.8s cubic-bezier(0.25, 1, 0.5, 1) backwards;
+    }
+
+    .stat-card:nth-child(1) { animation-delay: 0.1s; }
+    .stat-card:nth-child(2) { animation-delay: 0.2s; }
+    .stat-card:nth-child(3) { animation-delay: 0.3s; }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .stat-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(201,169,110,0.5);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--gold), var(--gold-lite));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .stat-card:hover::before {
+      opacity: 1;
+    }
+
+    .stat-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      display: block;
+      filter: drop-shadow(0 4px 12px rgba(201,169,110,0.3));
+    }
+
+    .stat-number {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(3.5rem, 8vw, 5rem);
+      font-weight: 400;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+      text-rendering: optimizeLegibility;
+    }
+
+    .stat-label {
+      font-family: 'Jost', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 300;
+      color: var(--sage);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .stat-card--confirmed .stat-number { color: #7fb685; }
+    .stat-card--pending .stat-number { color: var(--gold-lite); }
+
+    /* ═══════════════════════════════════════════
+       PROGRESS SECTION
+    ═══════════════════════════════════════════ */
+    .progress-section {
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(201,169,110,0.2);
+      border-radius: 24px;
+      padding: 2.5rem;
+      margin-bottom: 3rem;
+      animation: fadeInUp 0.8s cubic-bezier(0.25, 1, 0.5, 1) 0.4s backwards;
+    }
+
+    .progress-section h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-style: italic;
+      font-size: 1.8rem;
+      font-weight: 400;
+      color: var(--cream);
+      margin-bottom: 2rem;
+      text-align: center;
+      text-rendering: optimizeLegibility;
+    }
+
+    .progress-row {
+      margin-bottom: 2rem;
+    }
+
+    .progress-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .progress-row-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1rem;
+      font-weight: 300;
+      color: var(--cream);
+      margin-bottom: 0.75rem;
+    }
+
+    .progress-row-label .label-text {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .progress-row-label .label-count {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.3rem;
+      font-weight: 400;
+      color: var(--gold);
+    }
+
+    .progress-bar-bg {
+      background: rgba(0,0,0,0.2);
+      border-radius: 999px;
+      height: 24px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      animation: shimmer 2s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .fill-confirmados {
+      background: linear-gradient(90deg, #5a9d66, #7fb685);
+      box-shadow: 0 0 20px rgba(90,157,102,0.5);
+    }
+
+    .fill-pendientes {
+      background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+      box-shadow: 0 0 20px rgba(201,169,110,0.5);
+    }
+
+    .progress-percentage {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: 'Jost', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: rgba(255,255,255,0.9);
+      text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    }
+
+    /* ═══════════════════════════════════════════
+       DETAIL GRID
+    ═══════════════════════════════════════════ */
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .detail-card {
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(201,169,110,0.2);
+      border-radius: 24px;
+      padding: 2rem;
+      animation: fadeInUp 0.8s cubic-bezier(0.25, 1, 0.5, 1) backwards;
+      transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .detail-card:nth-child(1) { animation-delay: 0.5s; }
+    .detail-card:nth-child(2) { animation-delay: 0.6s; }
+
+    .detail-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(201,169,110,0.4);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    }
+
+    .detail-card h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-style: italic;
+      font-size: 1.6rem;
+      font-weight: 400;
+      color: var(--cream);
+      margin-bottom: 1.5rem;
+      text-align: center;
+      text-rendering: optimizeLegibility;
+    }
+
+    .detail-list {
+      list-style: none;
+    }
+
+    .detail-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+      border-bottom: 1px solid rgba(201,169,110,0.15);
+      font-size: 1rem;
+      font-weight: 300;
+      color: var(--cream);
+      transition: all 0.3s ease;
+    }
+
+    .detail-list li:last-child {
+      border-bottom: none;
+    }
+
+    .detail-list li:hover {
+      padding-left: 0.5rem;
+      color: var(--gold-lite);
+    }
+
+    .detail-list .item-label {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .detail-list .item-icon {
+      font-size: 1.4rem;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3));
+    }
+
+    .detail-list .count {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 400;
+      color: var(--gold);
+      font-size: 1.5rem;
+      min-width: 40px;
+      text-align: right;
+    }
+
+    /* ═══════════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════════ */
+    footer {
+      text-align: center;
+      padding: 3rem 0 2rem;
+      animation: fadeInUp 0.8s cubic-bezier(0.25, 1, 0.5, 1) 0.7s backwards;
+    }
+
+    .footer-ornament {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      opacity: 0.4;
+    }
+
+    footer p {
+      font-family: 'Jost', sans-serif;
+      font-weight: 200;
+      font-size: 0.85rem;
+      color: var(--sage);
+      letter-spacing: 0.1em;
+    }
+
+    /* ═══════════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════════ */
+    @media (max-width: 768px) {
+      body {
+        padding: 1.5rem 1rem;
+      }
+
+      header h1 {
+        font-size: clamp(2rem, 7vw, 2.8rem);
+        margin-bottom: 0.75rem;
+      }
+
+      .header-subtitle {
+        font-size: 0.85rem;
+      }
+
+      .btn-refresh {
+        padding: 0.65rem 1.5rem;
+        font-size: 0.75rem;
+        min-height: 44px;
+      }
+
+      .hero-stats {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .stat-card {
+        padding: 2rem 1.5rem;
+      }
+
+      .stat-icon {
+        font-size: 2rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .stat-number {
+        font-size: clamp(3rem, 10vw, 4rem);
+      }
+
+      .stat-label {
+        font-size: 0.85rem;
+      }
+
+      .progress-section {
+        padding: 2rem 1.5rem;
+      }
+
+      .progress-section h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .progress-row {
+        margin-bottom: 1.5rem;
+      }
+
+      .progress-row-label {
+        font-size: 0.9rem;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+
+      .progress-row-label .label-count {
+        font-size: 1.1rem;
+      }
+
+      .progress-bar-bg {
+        height: 20px;
+      }
+
+      .progress-percentage {
+        font-size: 0.7rem;
+        right: 8px;
+      }
+
+      .detail-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+
+      .detail-card {
+        padding: 1.5rem;
+      }
+
+      .detail-card h2 {
+        font-size: 1.4rem;
+        margin-bottom: 1.25rem;
+      }
+
+      .detail-list li {
+        padding: 0.85rem 0;
+        font-size: 0.95rem;
+      }
+
+      .detail-list .item-icon {
+        font-size: 1.2rem;
+      }
+
+      .detail-list .count {
+        font-size: 1.3rem;
+        min-width: 35px;
+      }
+
+      footer {
+        padding: 2.5rem 0 2rem;
+      }
+
+      .footer-ornament svg {
+        width: 100px;
+        height: 42px;
+      }
+    }
+
+    /* Small mobile devices */
+    @media (max-width: 480px) {
+      body {
+        padding: 1rem 0.75rem;
+      }
+
+      .container {
+        padding: 0;
+      }
+
+      header h1 {
+        font-size: clamp(1.8rem, 8vw, 2.2rem);
+      }
+
+      .stat-number {
+        font-size: clamp(2.5rem, 12vw, 3.5rem);
+      }
+
+      .progress-section h2 {
+        font-size: 1.3rem;
+      }
+
+      .detail-card h2 {
+        font-size: 1.2rem;
+      }
+    }
+
+    /* Tablet landscape */
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .hero-stats {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .detail-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* ═══════════════════════════════════════════
+       LOADING ANIMATION
+    ═══════════════════════════════════════════ */
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .loading {
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- ═══════════════════════════════════════════
+         HEADER
+    ═══════════════════════════════════════════ -->
+    <header>
+      <p class="header-eyebrow">Dashboard de Confirmaciones</p>
+      <h1><?= config.nombre_novia || 'Jennifer' ?> <span class="ampersand">&amp;</span> <?= config.nombre_novio || 'Nicolás' ?></h1>
+      <p class="header-subtitle">Métricas en tiempo real · <?= config.app_subtitulo || '15 de agosto de 2026' ?></p>
+      <div class="gold-rule"></div>
+      <button class="btn-refresh" onclick="location.reload()">
+        <span>🔄</span>
+        <span>Actualizar</span>
+      </button>
+    </header>
+
+    <!-- ═══════════════════════════════════════════
+         HERO STATS
+    ═══════════════════════════════════════════ -->
+    <section class="hero-stats" aria-label="Resumen de invitados">
+      <div class="stat-card">
+        <span class="stat-icon">👥</span>
+        <div class="stat-number"><?= metricas.totalInvitados ?></div>
+        <div class="stat-label">Total Invitados</div>
+      </div>
+
+      <div class="stat-card stat-card--confirmed">
+        <span class="stat-icon">✅</span>
+        <div class="stat-number"><?= metricas.totalConfirmados ?></div>
+        <div class="stat-label">Confirmados</div>
+      </div>
+
+      <div class="stat-card stat-card--pending">
+        <span class="stat-icon">⏳</span>
+        <div class="stat-number"><?= metricas.totalPendientes ?></div>
+        <div class="stat-label">Pendientes</div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         PROGRESS BARS
+    ═══════════════════════════════════════════ -->
+    <section class="progress-section" aria-label="Progreso de confirmaciones">
+      <h2>Progreso de Confirmaciones</h2>
+
+      <div class="progress-row">
+        <div class="progress-row-label">
+          <span class="label-text">
+            <span>✅</span>
+            <span>Confirmados</span>
+          </span>
+          <span class="label-count"><?= metricas.totalConfirmados ?> / <?= metricas.totalInvitados ?></span>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill fill-confirmados"
+               style="width: <?= metricas.porcentajeConfirmados ?>%">
+            <span class="progress-percentage"><?= metricas.porcentajeConfirmados ?>%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="progress-row">
+        <div class="progress-row-label">
+          <span class="label-text">
+            <span>⏳</span>
+            <span>Pendientes</span>
+          </span>
+          <span class="label-count"><?= metricas.totalPendientes ?> / <?= metricas.totalInvitados ?></span>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill fill-pendientes"
+               style="width: <?= metricas.porcentajePendientes ?>%">
+            <span class="progress-percentage"><?= metricas.porcentajePendientes ?>%</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════
+         DETAIL CARDS
+    ═══════════════════════════════════════════ -->
+    <div class="detail-grid">
+
+      <!-- Bebidas -->
+      <section class="detail-card" aria-label="Preferencias de bebida">
+        <h2>¿Con qué brindamos?</h2>
+        <ul class="detail-list">
+          <li>
+            <span class="item-label">
+              <span class="item-icon">🍷</span>
+              <span>Vino</span>
+            </span>
+            <span class="count"><?= metricas.porBebida['Vino'] ?></span>
+          </li>
+          <li>
+            <span class="item-label">
+              <span class="item-icon">🥃</span>
+              <span>Whisky</span>
+            </span>
+            <span class="count"><?= metricas.porBebida['Whisky'] ?></span>
+          </li>
+          <li>
+            <span class="item-label">
+              <span class="item-icon">🌵</span>
+              <span>Tequila</span>
+            </span>
+            <span class="count"><?= metricas.porBebida['Tequila'] ?></span>
+          </li>
+          <li>
+            <span class="item-label">
+              <span class="item-icon">🥤</span>
+              <span>Sin alcohol</span>
+            </span>
+            <span class="count"><?= metricas.porBebida['Sin alcohol'] ?></span>
+          </li>
+        </ul>
+      </section>
+
+      <!-- Restricciones -->
+      <section class="detail-card" aria-label="Restricciones alimentarias">
+        <h2>Restricciones Alimentarias</h2>
+        <ul class="detail-list">
+          <li>
+            <span class="item-label">
+              <span class="item-icon">✅</span>
+              <span>Ninguna</span>
+            </span>
+            <span class="count"><?= metricas.porRestriccion['Ninguna'] ?></span>
+          </li>
+          <li>
+            <span class="item-label">
+              <span class="item-icon">🥗</span>
+              <span>Vegetariano</span>
+            </span>
+            <span class="count"><?= metricas.porRestriccion['Vegetariano'] ?></span>
+          </li>
+          <li>
+            <span class="item-label">
+              <span class="item-icon">🌱</span>
+              <span>Vegano</span>
+            </span>
+            <span class="count"><?= metricas.porRestriccion['Vegano'] ?></span>
+          </li>
+          <li>
+            <span class="item-label">
+              <span class="item-icon">🌾</span>
+              <span>Sin gluten</span>
+            </span>
+            <span class="count"><?= metricas.porRestriccion['Sin gluten'] ?></span>
+          </li>
+          <li>
+            <span class="item-label">
+              <span class="item-icon">🥛</span>
+              <span>Sin lactosa</span>
+            </span>
+            <span class="count"><?= metricas.porRestriccion['Sin lactosa'] ?></span>
+          </li>
+          <li>
+            <span class="item-label">
+              <span class="item-icon">⚠️</span>
+              <span>Otro</span>
+            </span>
+            <span class="count"><?= metricas.porRestriccion['Otro'] ?></span>
+          </li>
+        </ul>
+      </section>
+
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         FOOTER
+    ═══════════════════════════════════════════ -->
+    <footer>
+      <div class="footer-ornament" aria-hidden="true">
+        <svg width="120" height="50" viewBox="0 0 120 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10 40 Q35 15 60 25 Q85 15 110 40" stroke="#7a9e7e" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+          <ellipse cx="35" cy="20" rx="9" ry="5" fill="#7a9e7e" transform="rotate(-30 35 20)" opacity="0.7"/>
+          <ellipse cx="60" cy="14" rx="8" ry="4.5" fill="#4a7c59" transform="rotate(0 60 14)" opacity="0.7"/>
+          <ellipse cx="85" cy="20" rx="9" ry="5" fill="#7a9e7e" transform="rotate(30 85 20)" opacity="0.7"/>
+          <g transform="translate(60,25)">
+            <circle cx="0" cy="-5" r="3" fill="#c9a96e" opacity="0.8"/>
+            <circle cx="4" cy="-1" r="3" fill="#c9a96e" opacity="0.8"/>
+            <circle cx="3" cy="4" r="3" fill="#c9a96e" opacity="0.8"/>
+            <circle cx="-3" cy="4" r="3" fill="#c9a96e" opacity="0.8"/>
+            <circle cx="-4" cy="-1" r="3" fill="#c9a96e" opacity="0.8"/>
+            <circle cx="0" cy="0" r="2.5" fill="#a07840"/>
+          </g>
+        </svg>
+      </div>
+      <p>Dashboard actualizado en tiempo real</p>
+    </footer>
+
+  </div>
+
+</body>
+</html>
