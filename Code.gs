@@ -1346,11 +1346,8 @@ function doGet_(params, ss, now) {
     };
     var template = HtmlService.createTemplateFromFile('Agradecimiento');
     template.templateData = JSON.stringify(templateData);
-    // Inyectar config como script para que esté disponible en el cliente
-    var configScript = '<script>window.config = ' + JSON.stringify(config) + ';</script>';
-    var html = template.evaluate().getContent();
-    html = html.replace('</head>', configScript + '</head>');
-    return HtmlService.createHtmlOutput(html).setTitle('Gracias por Acompañarnos — ' + config.nombre_novia + ' & ' + config.nombre_novio);
+    template.config = config;  // ← hace que <?= config.* ?> funcione en el template
+    return template.evaluate().setTitle('Gracias por Acompañarnos — ' + config.nombre_novia + ' & ' + config.nombre_novio);
   }
 
   // 3.5 ANTES DE LA BODA: Verificación de fecha límite RSVP
@@ -1367,11 +1364,8 @@ function doGet_(params, ss, now) {
     };
     var template = HtmlService.createTemplateFromFile('Agradecimiento');
     template.templateData = JSON.stringify(templateData);
-    // Inyectar config como script para que esté disponible en el cliente
-    var configScript = '<script>window.config = ' + JSON.stringify(config) + ';</script>';
-    var html = template.evaluate().getContent();
-    html = html.replace('</head>', configScript + '</head>');
-    return HtmlService.createHtmlOutput(html).setTitle('¡Gracias por Confirmar! — ' + config.nombre_novia + ' & ' + config.nombre_novio);
+    template.config = config;  // ← hace que <?= config.* ?> funcione en el template
+    return template.evaluate().setTitle('¡Gracias por Confirmar! — ' + config.nombre_novia + ' & ' + config.nombre_novio);
   }
 
   // 3.7 Mostrar formulario RSVP (fila[3] === 'Pendiente' o vacío)
