@@ -1289,16 +1289,13 @@ function doGet_(params, ss, now) {
   // 3.1 Rama ?page=dashboard
   if (params.page === 'dashboard') {
     var metricas = getDashboardData_(ss);
-    
-    // Calcular porcentajes en el servidor para evitar problemas con operadores en templates
     metricas.porcentajeConfirmados = metricas.totalInvitados > 0 ? Math.round(metricas.totalConfirmados / metricas.totalInvitados * 100) : 0;
-    metricas.porcentajePendientes = metricas.totalInvitados > 0 ? Math.round(metricas.totalPendientes / metricas.totalInvitados * 100) : 0;
-    
-    var template = HtmlService.createTemplateFromFile('Dashboard');
-    // Pasar como JSON serializado — evita ReferenceError cuando GAS evalúa el template
-    template.metricasJson = JSON.stringify(metricas);
-    template.configJson   = JSON.stringify(config);
-    return template.evaluate().setTitle('Dashboard — Boda ' + config.nombre_novia + ' & ' + config.nombre_novio);
+    metricas.porcentajePendientes  = metricas.totalInvitados > 0 ? Math.round(metricas.totalPendientes  / metricas.totalInvitados * 100) : 0;
+
+    // Generar HTML directamente en el backend — sin templates, sin ReferenceError posible
+    var html = buildDashboardHtml_(metricas, config);
+    return HtmlService.createHtmlOutput(html)
+      .setTitle('Dashboard — Boda ' + (config.nombre_novia || 'Jennifer') + ' & ' + (config.nombre_novio || 'Nicolás'));
   }
 
   // 3.2 Fechas importantes (desde parámetros)
@@ -2268,4 +2265,122 @@ function getDashboardData_(ss) {
   }
 
   return metricas;
+}
+
+/**
+ * Genera el HTML completo del Dashboard directamente en el backend.
+ * Evita cualquier problema de ReferenceError en templates de GAS.
+ */
+function buildDashboardHtml_(m, c) {
+  var forest    = c.color_forest     || '#1a2e22';
+  var forestMid = c.color_forest_mid || '#243d2e';
+  var sage      = c.color_sage       || '#7a9e7e';
+  var cream     = c.color_cream      || '#f7f0e6';
+  var creamDeep = c.color_cream_deep || '#ede3d5';
+  var offWhite  = c.color_off_white  || '#faf6f0';
+  var gold      = c.color_gold       || '#c9a96e';
+  var goldLite  = c.color_gold_lite  || '#e0c898';
+  var goldDark  = c.color_gold_dark  || '#a07840';
+  var rose      = c.color_rose       || '#d4a5a5';
+
+  var novia    = c.nombre_novia  || 'Jennifer';
+  var novio    = c.nombre_novio  || 'Nicolás';
+  var subtitulo = c.app_subtitulo || '15 de agosto de 2026';
+  var favicon  = c.favicon_url   || 'https://images.unsplash.com/photo-1519741497674-611481863552?w=180';
+
+  function row(icon, label, val) {
+    return '<li><span class="item-label"><span class="item-icon">' + icon + '</span><span>' + label + '</span></span><span class="count">' + (val || 0) + '</span></li>';
+  }
+
+  return '<!DOCTYPE html><html lang="es"><head>' +
+    '<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>' +
+    '<title>Dashboard \u2014 ' + novia + ' &amp; ' + novio + '</title>' +
+    '<link rel="icon" href="data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><text y=\'0.9em\' font-size=\'90\'>💍</text></svg>">' +
+    '<link rel="preconnect" href="https://fonts.googleapis.com">' +
+    '<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">' +
+    '<style>' +
+    ':root{--forest:' + forest + ';--forest-mid:' + forestMid + ';--sage:' + sage + ';--cream:' + cream + ';--cream-deep:' + creamDeep + ';--off-white:' + offWhite + ';--gold:' + gold + ';--gold-lite:' + goldLite + ';--gold-dark:' + goldDark + ';--rose:' + rose + ';}' +
+    '*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}' +
+    'body{font-family:\'Jost\',sans-serif;background:linear-gradient(135deg,var(--forest) 0%,var(--forest-mid) 100%);color:var(--cream);font-size:16px;min-height:100vh;padding:2rem 1.5rem;}' +
+    '.container{max-width:1200px;margin:0 auto;}' +
+    'header{text-align:center;margin-bottom:3rem;}' +
+    '.eyebrow{font-size:0.7rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem;}' +
+    'h1{font-family:\'Cormorant Garamond\',serif;font-style:italic;font-size:clamp(2rem,6vw,3.5rem);font-weight:400;color:var(--cream);margin-bottom:0.5rem;}' +
+    'h1 .amp{color:var(--gold);}' +
+    '.subtitle{font-size:0.95rem;font-weight:300;color:var(--sage);margin-bottom:1.5rem;}' +
+    '.gold-rule{width:100px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:1.5rem auto;}' +
+    '.btn-refresh{display:inline-flex;align-items:center;gap:0.5rem;padding:0.75rem 1.8rem;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:var(--forest);border:none;border-radius:50px;font-size:0.85rem;font-weight:400;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;min-height:48px;box-shadow:0 4px 20px rgba(201,169,110,0.4);}' +
+    '.hero-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;margin-bottom:3rem;}' +
+    '.stat-card{background:rgba(255,255,255,0.06);border:1px solid rgba(201,169,110,0.2);border-radius:24px;padding:2.5rem 2rem;text-align:center;}' +
+    '.stat-icon{font-size:2.5rem;margin-bottom:1rem;display:block;}' +
+    '.stat-number{font-family:\'Cormorant Garamond\',serif;font-size:clamp(3.5rem,8vw,5rem);font-weight:400;color:var(--gold);line-height:1;margin-bottom:0.5rem;}' +
+    '.stat-label{font-size:0.95rem;font-weight:300;color:var(--sage);letter-spacing:0.08em;text-transform:uppercase;}' +
+    '.stat-card--confirmed .stat-number{color:#7fb685;}' +
+    '.stat-card--pending .stat-number{color:var(--gold-lite);}' +
+    '.progress-section{background:rgba(255,255,255,0.06);border:1px solid rgba(201,169,110,0.2);border-radius:24px;padding:2.5rem;margin-bottom:3rem;}' +
+    '.progress-section h2{font-family:\'Cormorant Garamond\',serif;font-style:italic;font-size:1.8rem;font-weight:400;color:var(--cream);margin-bottom:2rem;text-align:center;}' +
+    '.progress-row{margin-bottom:2rem;}' +
+    '.progress-row-label{display:flex;justify-content:space-between;align-items:center;font-size:1rem;font-weight:300;color:var(--cream);margin-bottom:0.75rem;}' +
+    '.label-text{display:flex;align-items:center;gap:0.5rem;}' +
+    '.label-count{font-family:\'Cormorant Garamond\',serif;font-size:1.3rem;font-weight:400;color:var(--gold);}' +
+    '.progress-bar-bg{background:rgba(0,0,0,0.2);border-radius:999px;height:24px;overflow:hidden;position:relative;}' +
+    '.progress-bar-fill{height:100%;border-radius:999px;position:relative;}' +
+    '.fill-confirmados{background:linear-gradient(90deg,#5a9d66,#7fb685);}' +
+    '.fill-pendientes{background:linear-gradient(90deg,var(--gold-dark),var(--gold));}' +
+    '.progress-percentage{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:0.75rem;font-weight:500;color:rgba(255,255,255,0.9);}' +
+    '.detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem;margin-bottom:3rem;}' +
+    '.detail-card{background:rgba(255,255,255,0.06);border:1px solid rgba(201,169,110,0.2);border-radius:24px;padding:2rem;}' +
+    '.detail-card h2{font-family:\'Cormorant Garamond\',serif;font-style:italic;font-size:1.6rem;font-weight:400;color:var(--cream);margin-bottom:1.5rem;text-align:center;}' +
+    '.detail-list{list-style:none;}' +
+    '.detail-list li{display:flex;justify-content:space-between;align-items:center;padding:1rem 0;border-bottom:1px solid rgba(201,169,110,0.15);font-size:1rem;font-weight:300;color:var(--cream);}' +
+    '.detail-list li:last-child{border-bottom:none;}' +
+    '.item-label{display:flex;align-items:center;gap:0.75rem;}' +
+    '.item-icon{font-size:1.4rem;}' +
+    '.count{font-family:\'Cormorant Garamond\',serif;font-weight:400;color:var(--gold);font-size:1.5rem;min-width:40px;text-align:right;}' +
+    'footer{text-align:center;padding:3rem 0 2rem;}' +
+    'footer p{font-size:0.85rem;font-weight:200;color:var(--sage);letter-spacing:0.1em;}' +
+    '@media(max-width:768px){.hero-stats{grid-template-columns:1fr;}.detail-grid{grid-template-columns:1fr;}}' +
+    '</style></head><body>' +
+    '<div class="container">' +
+    '<header>' +
+    '<p class="eyebrow">Dashboard de Confirmaciones</p>' +
+    '<h1>' + novia + ' <span class="amp">&amp;</span> ' + novio + '</h1>' +
+    '<p class="subtitle">Métricas en tiempo real · ' + subtitulo + '</p>' +
+    '<div class="gold-rule"></div>' +
+    '<button class="btn-refresh" onclick="location.reload()">🔄 Actualizar</button>' +
+    '</header>' +
+
+    '<section class="hero-stats">' +
+    '<div class="stat-card"><span class="stat-icon">👥</span><div class="stat-number">' + m.totalInvitados + '</div><div class="stat-label">Total Invitados</div></div>' +
+    '<div class="stat-card stat-card--confirmed"><span class="stat-icon">✅</span><div class="stat-number">' + m.totalConfirmados + '</div><div class="stat-label">Confirmados</div></div>' +
+    '<div class="stat-card stat-card--pending"><span class="stat-icon">⏳</span><div class="stat-number">' + m.totalPendientes + '</div><div class="stat-label">Pendientes</div></div>' +
+    '</section>' +
+
+    '<section class="progress-section">' +
+    '<h2>Progreso de Confirmaciones</h2>' +
+    '<div class="progress-row"><div class="progress-row-label"><span class="label-text"><span>✅</span><span>Confirmados</span></span><span class="label-count">' + m.totalConfirmados + ' / ' + m.totalInvitados + '</span></div>' +
+    '<div class="progress-bar-bg"><div class="progress-bar-fill fill-confirmados" style="width:' + m.porcentajeConfirmados + '%"><span class="progress-percentage">' + m.porcentajeConfirmados + '%</span></div></div></div>' +
+    '<div class="progress-row"><div class="progress-row-label"><span class="label-text"><span>⏳</span><span>Pendientes</span></span><span class="label-count">' + m.totalPendientes + ' / ' + m.totalInvitados + '</span></div>' +
+    '<div class="progress-bar-bg"><div class="progress-bar-fill fill-pendientes" style="width:' + m.porcentajePendientes + '%"><span class="progress-percentage">' + m.porcentajePendientes + '%</span></div></div></div>' +
+    '</section>' +
+
+    '<div class="detail-grid">' +
+    '<section class="detail-card"><h2>¿Con qué brindamos?</h2><ul class="detail-list">' +
+    row('🍷','Vino', m.porBebida['Vino']) +
+    row('🥃','Whisky', m.porBebida['Whisky']) +
+    row('🌵','Tequila', m.porBebida['Tequila']) +
+    row('🥤','Sin alcohol', m.porBebida['Sin alcohol']) +
+    '</ul></section>' +
+    '<section class="detail-card"><h2>Restricciones Alimentarias</h2><ul class="detail-list">' +
+    row('✅','Ninguna', m.porRestriccion['Ninguna']) +
+    row('🥗','Vegetariano', m.porRestriccion['Vegetariano']) +
+    row('🌱','Vegano', m.porRestriccion['Vegano']) +
+    row('🌾','Sin gluten', m.porRestriccion['Sin gluten']) +
+    row('🥛','Sin lactosa', m.porRestriccion['Sin lactosa']) +
+    row('⚠️','Otro', m.porRestriccion['Otro']) +
+    '</ul></section>' +
+    '</div>' +
+
+    '<footer><p>Dashboard actualizado en tiempo real</p></footer>' +
+    '</div></body></html>';
 }
