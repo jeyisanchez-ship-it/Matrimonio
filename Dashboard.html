@@ -2,41 +2,40 @@
 <html lang="es">
 <head>
   <?
-    // Garantizar que metricas y config siempre existan aunque el template
-    // se evalúe sin que el backend los haya asignado explícitamente.
-    if (typeof metricas === 'undefined') {
-      metricas = {
-        totalInvitados: 0, totalConfirmados: 0, totalPendientes: 0,
-        porcentajeConfirmados: 0, porcentajePendientes: 0,
-        porBebida: { 'Vino': 0, 'Whisky': 0, 'Tequila': 0, 'Sin alcohol': 0 },
-        porRestriccion: { 'Ninguna': 0, 'Vegetariano': 0, 'Vegano': 0, 'Sin gluten': 0, 'Sin lactosa': 0, 'Otro': 0 }
-      };
-    }
-    if (typeof config === 'undefined') { config = {}; }
+    // Deserializar JSON inyectado desde el backend.
+    // El backend pasa metricasJson y configJson como strings JSON (template.metricasJson = JSON.stringify(...))
+    // Esto evita el ReferenceError que ocurre cuando GAS evalúa variables de objeto directamente.
+    var _metricas = metricasJson ? JSON.parse(metricasJson) : {
+      totalInvitados: 0, totalConfirmados: 0, totalPendientes: 0,
+      porcentajeConfirmados: 0, porcentajePendientes: 0,
+      porBebida: { 'Vino': 0, 'Whisky': 0, 'Tequila': 0, 'Sin alcohol': 0 },
+      porRestriccion: { 'Ninguna': 0, 'Vegetariano': 0, 'Vegano': 0, 'Sin gluten': 0, 'Sin lactosa': 0, 'Otro': 0 }
+    };
+    var _config = configJson ? JSON.parse(configJson) : {};
   ?>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Dashboard — <?= config.nombre_novia || 'Jennifer' ?> & <?= config.nombre_novio || 'Nicolás' ?></title>
+  <title>Dashboard — <?= _config.nombre_novia || 'Jennifer' ?> & <?= _config.nombre_novio || 'Nicolás' ?></title>
   
   <!-- Favicon -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>💍</text></svg>">
-  <link rel="apple-touch-icon" href="<?= config.favicon_url || 'https://images.unsplash.com/photo-1519741497674-611481863552?w=180' ?>">
+  <link rel="apple-touch-icon" href="<?= _config.favicon_url || 'https://images.unsplash.com/photo-1519741497674-611481863552?w=180' ?>">
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --forest:      <?= config.color_forest || '#1a2e22' ?>;
-      --forest-mid:  <?= config.color_forest_mid || '#243d2e' ?>;
-      --sage:        <?= config.color_sage || '#7a9e7e' ?>;
-      --cream:       <?= config.color_cream || '#f7f0e6' ?>;
-      --cream-deep:  <?= config.color_cream_deep || '#ede3d5' ?>;
-      --off-white:   <?= config.color_off_white || '#faf6f0' ?>;
-      --gold:        <?= config.color_gold || '#c9a96e' ?>;
-      --gold-lite:   <?= config.color_gold_lite || '#e0c898' ?>;
-      --gold-dark:   <?= config.color_gold_dark || '#a07840' ?>;
-      --rose:        <?= config.color_rose || '#d4a5a5' ?>;
+      --forest:      <?= _config.color_forest || '#1a2e22' ?>;
+      --forest-mid:  <?= _config.color_forest_mid || '#243d2e' ?>;
+      --sage:        <?= _config.color_sage || '#7a9e7e' ?>;
+      --cream:       <?= _config.color_cream || '#f7f0e6' ?>;
+      --cream-deep:  <?= _config.color_cream_deep || '#ede3d5' ?>;
+      --off-white:   <?= _config.color_off_white || '#faf6f0' ?>;
+      --gold:        <?= _config.color_gold || '#c9a96e' ?>;
+      --gold-lite:   <?= _config.color_gold_lite || '#e0c898' ?>;
+      --gold-dark:   <?= _config.color_gold_dark || '#a07840' ?>;
+      --rose:        <?= _config.color_rose || '#d4a5a5' ?>;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -624,8 +623,8 @@
     ═══════════════════════════════════════════ -->
     <header>
       <p class="header-eyebrow">Dashboard de Confirmaciones</p>
-      <h1><?= config.nombre_novia || 'Jennifer' ?> <span class="ampersand">&amp;</span> <?= config.nombre_novio || 'Nicolás' ?></h1>
-      <p class="header-subtitle">Métricas en tiempo real · <?= config.app_subtitulo || '15 de agosto de 2026' ?></p>
+      <h1><?= _config.nombre_novia || 'Jennifer' ?> <span class="ampersand">&amp;</span> <?= _config.nombre_novio || 'Nicolás' ?></h1>
+      <p class="header-subtitle">Métricas en tiempo real · <?= _config.app_subtitulo || '15 de agosto de 2026' ?></p>
       <div class="gold-rule"></div>
       <button class="btn-refresh" onclick="location.reload()">
         <span>🔄</span>
@@ -639,19 +638,19 @@
     <section class="hero-stats" aria-label="Resumen de invitados">
       <div class="stat-card">
         <span class="stat-icon">👥</span>
-        <div class="stat-number"><?= metricas.totalInvitados ?></div>
+        <div class="stat-number"><?= _metricas.totalInvitados ?></div>
         <div class="stat-label">Total Invitados</div>
       </div>
 
       <div class="stat-card stat-card--confirmed">
         <span class="stat-icon">✅</span>
-        <div class="stat-number"><?= metricas.totalConfirmados ?></div>
+        <div class="stat-number"><?= _metricas.totalConfirmados ?></div>
         <div class="stat-label">Confirmados</div>
       </div>
 
       <div class="stat-card stat-card--pending">
         <span class="stat-icon">⏳</span>
-        <div class="stat-number"><?= metricas.totalPendientes ?></div>
+        <div class="stat-number"><?= _metricas.totalPendientes ?></div>
         <div class="stat-label">Pendientes</div>
       </div>
     </section>
@@ -668,12 +667,12 @@
             <span>✅</span>
             <span>Confirmados</span>
           </span>
-          <span class="label-count"><?= metricas.totalConfirmados ?> / <?= metricas.totalInvitados ?></span>
+          <span class="label-count"><?= _metricas.totalConfirmados ?> / <?= _metricas.totalInvitados ?></span>
         </div>
         <div class="progress-bar-bg">
           <div class="progress-bar-fill fill-confirmados"
-               style="width: <?= metricas.porcentajeConfirmados ?>%">
-            <span class="progress-percentage"><?= metricas.porcentajeConfirmados ?>%</span>
+               style="width: <?= _metricas.porcentajeConfirmados ?>%">
+            <span class="progress-percentage"><?= _metricas.porcentajeConfirmados ?>%</span>
           </div>
         </div>
       </div>
@@ -684,12 +683,12 @@
             <span>⏳</span>
             <span>Pendientes</span>
           </span>
-          <span class="label-count"><?= metricas.totalPendientes ?> / <?= metricas.totalInvitados ?></span>
+          <span class="label-count"><?= _metricas.totalPendientes ?> / <?= _metricas.totalInvitados ?></span>
         </div>
         <div class="progress-bar-bg">
           <div class="progress-bar-fill fill-pendientes"
-               style="width: <?= metricas.porcentajePendientes ?>%">
-            <span class="progress-percentage"><?= metricas.porcentajePendientes ?>%</span>
+               style="width: <?= _metricas.porcentajePendientes ?>%">
+            <span class="progress-percentage"><?= _metricas.porcentajePendientes ?>%</span>
           </div>
         </div>
       </div>
@@ -709,28 +708,28 @@
               <span class="item-icon">🍷</span>
               <span>Vino</span>
             </span>
-            <span class="count"><?= metricas.porBebida['Vino'] ?></span>
+            <span class="count"><?= _metricas.porBebida['Vino'] ?></span>
           </li>
           <li>
             <span class="item-label">
               <span class="item-icon">🥃</span>
               <span>Whisky</span>
             </span>
-            <span class="count"><?= metricas.porBebida['Whisky'] ?></span>
+            <span class="count"><?= _metricas.porBebida['Whisky'] ?></span>
           </li>
           <li>
             <span class="item-label">
               <span class="item-icon">🌵</span>
               <span>Tequila</span>
             </span>
-            <span class="count"><?= metricas.porBebida['Tequila'] ?></span>
+            <span class="count"><?= _metricas.porBebida['Tequila'] ?></span>
           </li>
           <li>
             <span class="item-label">
               <span class="item-icon">🥤</span>
               <span>Sin alcohol</span>
             </span>
-            <span class="count"><?= metricas.porBebida['Sin alcohol'] ?></span>
+            <span class="count"><?= _metricas.porBebida['Sin alcohol'] ?></span>
           </li>
         </ul>
       </section>
@@ -744,42 +743,42 @@
               <span class="item-icon">✅</span>
               <span>Ninguna</span>
             </span>
-            <span class="count"><?= metricas.porRestriccion['Ninguna'] ?></span>
+            <span class="count"><?= _metricas.porRestriccion['Ninguna'] ?></span>
           </li>
           <li>
             <span class="item-label">
               <span class="item-icon">🥗</span>
               <span>Vegetariano</span>
             </span>
-            <span class="count"><?= metricas.porRestriccion['Vegetariano'] ?></span>
+            <span class="count"><?= _metricas.porRestriccion['Vegetariano'] ?></span>
           </li>
           <li>
             <span class="item-label">
               <span class="item-icon">🌱</span>
               <span>Vegano</span>
             </span>
-            <span class="count"><?= metricas.porRestriccion['Vegano'] ?></span>
+            <span class="count"><?= _metricas.porRestriccion['Vegano'] ?></span>
           </li>
           <li>
             <span class="item-label">
               <span class="item-icon">🌾</span>
               <span>Sin gluten</span>
             </span>
-            <span class="count"><?= metricas.porRestriccion['Sin gluten'] ?></span>
+            <span class="count"><?= _metricas.porRestriccion['Sin gluten'] ?></span>
           </li>
           <li>
             <span class="item-label">
               <span class="item-icon">🥛</span>
               <span>Sin lactosa</span>
             </span>
-            <span class="count"><?= metricas.porRestriccion['Sin lactosa'] ?></span>
+            <span class="count"><?= _metricas.porRestriccion['Sin lactosa'] ?></span>
           </li>
           <li>
             <span class="item-label">
               <span class="item-icon">⚠️</span>
               <span>Otro</span>
             </span>
-            <span class="count"><?= metricas.porRestriccion['Otro'] ?></span>
+            <span class="count"><?= _metricas.porRestriccion['Otro'] ?></span>
           </li>
         </ul>
       </section>

@@ -1295,8 +1295,9 @@ function doGet_(params, ss, now) {
     metricas.porcentajePendientes = metricas.totalInvitados > 0 ? Math.round(metricas.totalPendientes / metricas.totalInvitados * 100) : 0;
     
     var template = HtmlService.createTemplateFromFile('Dashboard');
-    template.metricas = metricas;
-    template.config = config;
+    // Pasar como JSON serializado — evita ReferenceError cuando GAS evalúa el template
+    template.metricasJson = JSON.stringify(metricas);
+    template.configJson   = JSON.stringify(config);
     return template.evaluate().setTitle('Dashboard — Boda ' + config.nombre_novia + ' & ' + config.nombre_novio);
   }
 
