@@ -2384,3 +2384,35 @@ function buildDashboardHtml_(m, c) {
     '<footer><p>Dashboard actualizado en tiempo real</p></footer>' +
     '</div></body></html>';
 }
+
+/**
+ * 🔍 DIAGNÓSTICO: Muestra las líneas 625-640 del Index.html en GAS
+ * Ejecutar desde el editor para ver qué versión del archivo está cargada.
+ */
+function diagnosticarIndexHtml() {
+  try {
+    var template = HtmlService.createTemplateFromFile('Index');
+    var html = template.evaluate().getContent();
+    var lineas = html.split('\n');
+    Logger.log('📄 Index.html tiene ' + lineas.length + ' líneas en GAS');
+    Logger.log('');
+    Logger.log('📍 Líneas 625-640:');
+    for (var i = 624; i < Math.min(640, lineas.length); i++) {
+      Logger.log('L' + (i+1) + ': ' + lineas[i]);
+    }
+    Logger.log('');
+    Logger.log('🔎 Buscando "metricas" en Index.html...');
+    var encontrado = false;
+    for (var j = 0; j < lineas.length; j++) {
+      if (lineas[j].indexOf('metricas') !== -1) {
+        Logger.log('⚠️ ENCONTRADO en línea ' + (j+1) + ': ' + lineas[j].trim());
+        encontrado = true;
+      }
+    }
+    if (!encontrado) {
+      Logger.log('✅ No se encontró "metricas" en Index.html — archivo correcto');
+    }
+  } catch(e) {
+    Logger.log('❌ Error: ' + e.toString());
+  }
+}
