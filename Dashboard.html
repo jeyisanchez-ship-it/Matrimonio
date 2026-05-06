@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <?
+    // Garantizar que metricas y config siempre existan aunque el template
+    // se evalúe sin que el backend los haya asignado explícitamente.
+    if (typeof metricas === 'undefined') {
+      metricas = {
+        totalInvitados: 0, totalConfirmados: 0, totalPendientes: 0,
+        porcentajeConfirmados: 0, porcentajePendientes: 0,
+        porBebida: { 'Vino': 0, 'Whisky': 0, 'Tequila': 0, 'Sin alcohol': 0 },
+        porRestriccion: { 'Ninguna': 0, 'Vegetariano': 0, 'Vegano': 0, 'Sin gluten': 0, 'Sin lactosa': 0, 'Otro': 0 }
+      };
+    }
+    if (typeof config === 'undefined') { config = {}; }
+  ?>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Dashboard — <?= config.nombre_novia || 'Jennifer' ?> & <?= config.nombre_novio || 'Nicolás' ?></title>
